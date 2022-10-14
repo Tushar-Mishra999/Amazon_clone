@@ -1,10 +1,11 @@
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/features/auth/screens/auth_screen.dart';
 import 'package:amazon_clone/features/home/screens/home_screen.dart';
-import 'package:amazon_clone/providers/user-provider.dart';
+import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:amazon_clone/router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'common/widgets/bottom_bar.dart';
 import 'features/auth/services/auth_service.dart';
 
 void main() {
@@ -44,7 +45,8 @@ class _MyAppState extends State<MyApp> {
         colorScheme:const ColorScheme.light(primary: GlobalVariables.secondaryColor),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: Provider.of<UserProvider>(context).user.token.isNotEmpty?const HomeScreen():const AuthScreen(),
+       home: Provider.of<UserProvider>(context).user.token.isNotEmpty?const BottomBar():const AuthScreen(),
+
     );
   }
 }

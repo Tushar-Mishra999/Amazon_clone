@@ -1,3 +1,7 @@
+import 'package:amazon_clone/common/widgets/loader.dart';
+import 'package:amazon_clone/features/home/services/home_services.dart';
+import 'package:amazon_clone/features/product_details/screens/product_details_screen.dart';
+import 'package:amazon_clone/models/product.dart';
 import 'package:flutter/material.dart';
 
 class DealOfDay extends StatefulWidget {
@@ -8,37 +12,37 @@ class DealOfDay extends StatefulWidget {
 }
 
 class _DealOfDayState extends State<DealOfDay> {
-  // Product? product;
-  // final HomeServices homeServices = HomeServices();
+  Product? product;
+  final HomeServices homeServices = HomeServices();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   fetchDealOfDay();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    fetchDealOfDay();
+  }
 
-  // void fetchDealOfDay() async {
-  //   product = await homeServices.fetchDealOfDay(context: context);
-  //   setState(() {});
-  // }
+  void fetchDealOfDay() async {
+    product = await homeServices.fetchDealOfDay(context: context);
+    setState(() {});
+  }
 
-  // void navigateToDetailScreen() {
-  //   Navigator.pushNamed(
-  //     context,
-  //     ProductDetailScreen.routeName,
-  //     arguments: product,
-  //   );
-  // }
+  void navigateToDetailScreen() {
+    Navigator.pushNamed(
+      context,
+      ProductDetailScreen.routeName,
+      arguments: product,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return 
-    // product == null
-    //     ? const Loader()
-    //     : product!.name.isEmpty
-    //         ? const SizedBox():
+    product == null
+        ? const Loader()
+        : product!.name.isEmpty
+            ? const SizedBox():
              GestureDetector(
-               // onTap: navigateToDetailScreen,
+                onTap: navigateToDetailScreen,
                 child: Column(
                   children: [
                     Container(
@@ -49,12 +53,11 @@ class _DealOfDayState extends State<DealOfDay> {
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
-                    // Image.network(
-                    //   'https://images.unsplash.com/photo-1665596553794-61961a0b40ec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
-                    //   //product!.images[0],
-                    //   height: 235,
-                    //   fit: BoxFit.fitHeight,
-                    // ),
+                    Image.network(
+                      product!.images[0],
+                      height: 235,
+                      fit: BoxFit.fitHeight,
+                    ),
                     Container(
                       padding: const EdgeInsets.only(left: 15),
                       alignment: Alignment.topLeft,
@@ -73,22 +76,22 @@ class _DealOfDayState extends State<DealOfDay> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    // SingleChildScrollView(
-                    //   scrollDirection: Axis.horizontal,
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: product!.images
-                    //         .map(
-                    //           (e) => Image.network(
-                    //             e,
-                    //             fit: BoxFit.fitWidth,
-                    //             width: 100,
-                    //             height: 100,
-                    //           ),
-                    //         )
-                    //         .toList(),
-                    //   ),
-                    // ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: product!.images
+                            .map(
+                              (e) => Image.network(
+                                e,
+                                fit: BoxFit.fitWidth,
+                                width: 100,
+                                height: 100,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: 15,

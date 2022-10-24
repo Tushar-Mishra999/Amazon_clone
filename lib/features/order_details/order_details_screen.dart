@@ -35,18 +35,21 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   // !!! ONLY FOR ADMIN!!!
-  // void changeOrderStatus(int status) {
-  //   adminServices.changeOrderStatus(
-  //     context: context,
-  //     status: status + 1,
-  //     order: widget.order,
-  //     onSuccess: () {
-  //       setState(() {
-  //         currentStep += 1;
-  //       });
-  //     },
-  //   );
-  // }
+  void changeOrderStatus(int status) {
+    if (status == 3) {
+      return;
+    }
+    adminServices.changeOrderStatus(
+      context: context,
+      status: status + 1,
+      order: widget.order,
+      onSuccess: () {
+        setState(() {
+          currentStep += 1;
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,11 +228,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Stepper(
                   currentStep: currentStep,
                   controlsBuilder: (context, details) {
-                    if (user.type == 'admin') {
+                    if (user.type == 'admin'&&currentStep<3) {
                       return CustomButton(
                         text: 'Done',
                         onTap: () {
-                          //changeOrderStatus(details.currentStep)
+                          changeOrderStatus(details.currentStep);
                         },
                       );
                     }
@@ -285,5 +288,4 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       ),
     );
   }
-
 }

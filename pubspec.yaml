@@ -41,6 +41,7 @@ dependencies:
   cloudinary_public: ^0.8.0
   flutter_rating_bar: ^3.2.0+1
   pay: ^1.0.8
+  charts_flutter: ^0.12.0
 dev_dependencies:
   flutter_lints: ^1.0.0
   flutter_test:

@@ -26,49 +26,11 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'ecommerce'
 app.config['JSON_SORT_KEYS'] = False
+app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
 
 app.get('/')
 def home():
     return make_response({'message':'Home'})
-
-# @app.post('/signup')
-# def signup():
-#     data = request.get_json()
-#     username = data['username']
-#     password = data['password']
-#     email = data['email']
-#     phoneno=data['phoneno']
-#     try:
-#         app.mysql.connection.commit()
-#     except OperationalError as SQLdbError:
-#         if "Lost connection" not in str(SQLdbError):
-#             return SQLdbError.__dict__
-#         app.mysql.connection = MySQL(app)
-#     cur = app.mysql.connection.cursor()
-#     cur.execute("INSERT INTO users VALUES('%s', '%s', '%s', '%s')"%(username, password, email, phoneno))
-#     app.mysql.connection.commit()
-#     cur.close()
-#     return make_response({'message':'Registered'}), 200
-
-# @app.post('/login')
-# def login():
-#     data = request.get_json()
-#     username = data['username']
-#     password = data['password']
-#     try:
-#         app.mysql.connection.commit()
-#     except OperationalError as SQLdbError:
-#         if "Lost connection" not in str(SQLdbError):
-#             return SQLdbError.__dict__
-#         app.mysql.connection = MySQL(app)
-#     cur = app.mysql.connection.cursor()
-#     cur.execute("SELECT * FROM users WHERE username = '%s' AND password = '%s'"%(username, password))
-#     result = cur.fetchone()
-#     cur.close()
-#     if result:
-#         return make_response({'message':'Logged in'}), 200
-#     else:
-#         return make_response({'message':'Invalid credentials'}), 401
 
 @app.get('/products')
 def products():

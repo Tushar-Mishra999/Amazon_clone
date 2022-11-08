@@ -27,6 +27,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'ecommerce'
 app.config['JSON_SORT_KEYS'] = False
+app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
 
 app.get('/')
 def home():

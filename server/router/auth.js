@@ -40,7 +40,7 @@ authRouter.post("/api/signin",async(req,res)=>{
             return res.status(400).json({msg:"Invalid password"});
         }
 
-        const token=jwt.sign({id:user._id},"passwordKey");
+        const token=jwt.sign({id:user._id},"0898a671f37849d79ed8126dd469dcd1");
         res.json({token,...user._doc});
 
     }
@@ -53,7 +53,7 @@ authRouter.post("/tokenIsValid", async (req, res) => {
     try {
       const token = req.header("x-auth-token");
       if (!token) return res.json(false);
-      const verified = jwt.verify(token, "passwordKey");
+      const verified = jwt.verify(token, "0898a671f37849d79ed8126dd469dcd1");
       if (!verified) return res.json(false);
   
       const user = await User.findById(verified.id);

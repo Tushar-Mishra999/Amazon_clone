@@ -35,7 +35,7 @@ class AdminServices {
         );
         imageUrls.add(res.secureUrl);
       }
-
+      
       Product product = Product(
         name: name,
         description: description,

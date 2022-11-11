@@ -256,5 +256,12 @@ def review_post():
     cur.close()
     return make_response({'message':'Added to reviews'}), 200
 
+@app.get('/routes')
+def routes():
+    routes = []
+    for route in app.url_map.iter_rules():
+        routes.append('%s' % route)
+    return make_response({'routes':routes}), 200
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=5001,debug=True)

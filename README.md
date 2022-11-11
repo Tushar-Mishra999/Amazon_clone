@@ -17,6 +17,6 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ## Creators
-Tushar Mishra - Frontend (Flutter)
-Sarthak Singhania - Backend and Database (Flask and MySQL)
-Srikant Tripathi - UI/UX (Figma)
+- Tushar Mishra - Frontend (Flutter)
+- Sarthak Singhania - Backend and Database (Flask and MySQL)
+- Srikant Tripathi - UI/UX (Figma)

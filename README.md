@@ -3,6 +3,6 @@ This an ecommerce multivendor platform where sellers and buyers can register the
 
 
 ## Creators
-- Tushar Mishra - Frontend (Flutter)
-- Sarthak Singhania - Backend and Database (Flask and MySQL)
-- Srikant Tripathi - UI/UX (Figma)
+- Tushar Mishra     - Frontend           (Flutter)
+- Sarthak Singhania - Backend & Database (Flask & MySQL)
+- Srikant Tripathi  - UI/UX              (Figma)

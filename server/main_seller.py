@@ -22,9 +22,9 @@ limiter = Limiter(
 )
 
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_HOST'] = 'attendance.cbcvudzl6rdd.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'ecommerce'
 app.config['JSON_SORT_KEYS'] = False
 app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'

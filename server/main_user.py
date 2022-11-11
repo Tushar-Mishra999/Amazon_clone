@@ -99,8 +99,15 @@ def search():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor()
     if request.args.get('query'):
-        cur.execute('select * from products where name like %s', ('%'+request.args.get('query')+'%',))
+        keywords=request.args.get('query').split()
+        query='select * from products where sku in (select sku from keywords where '
+        for keyword in keywords:
+            query+='name like "%s" or '
+        query=query[:-3]
+        cur.execute(query, tuple(['%'+keyword+'%' for keyword in keywords]))
         result=cur.fetchall()
+        cur.execute('select * from products where name like %s', ('%'+request.args.get('query')+'%',))
+        result+=cur.fetchall()
         cur.close()
         if result:
             return make_response({'message':'Products found', 'products':result}), 200

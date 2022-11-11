@@ -47,3 +47,4 @@ app.*.map.json
 
 #node_modules
 /server/node_modules
+/server/lol

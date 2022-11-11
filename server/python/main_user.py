@@ -28,6 +28,8 @@ app.config['MYSQL_DB'] = 'ecommerce'
 app.config['JSON_SORT_KEYS'] = False
 app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
 
+app.mysql = MySQL(app)
+
 app.get('/')
 def home():
     return make_response({'message':'Home'})

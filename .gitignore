@@ -46,5 +46,5 @@ app.*.map.json
 /android/app/release
 
 #node_modules
-/server/node_modules
+/server/js/node_modules
 /server/lol

@@ -43,7 +43,7 @@ def orders_get():
         app.mysql.connection = MySQL(app)
     seller_id=request.args.get('seller_id')
     cur = app.mysql.connection.cursor()
-    cur.execute("SELECT * from order join products_in_order using(order_no) join products using(sku) where seller_id='%s'"%(seller_id))
+    cur.execute("SELECT * from order join products_in_order using(order_no) join products using(sku) where seller_id=%s"%(seller_id))
     data = cur.fetchall()
     app.mysql.connection.commit()
     cur.close()
@@ -67,7 +67,7 @@ def add_product():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor()
-    cur.execute("INSERT INTO products VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')"%(sku, name, description, images, reg_price, inventory, seller_id, category))
+    cur.execute("INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"%(sku, name, description, images, reg_price, inventory, seller_id, category))
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message':'Product added'}), 200

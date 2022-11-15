@@ -151,7 +151,7 @@ def cart_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor()
-    cur.execute("INSERT INTO cart VALUES('%s', '%s', '%s')"%(username, sku, quantity))
+    cur.execute("INSERT INTO cart VALUES(%s, %s, %s)"%(username, sku, quantity))
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message':'Added to cart'}), 200
@@ -168,7 +168,7 @@ def cart_delete():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor()
-    cur.execute("DELETE FROM cart WHERE username = '%s' AND sku = '%s'"%(username, sku))
+    cur.execute("DELETE FROM cart WHERE username = %s AND sku = %s"%(username, sku))
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message':'Deleted from cart'}), 200
@@ -208,10 +208,10 @@ def order_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor()
-    cur.execute("INSERT INTO orders VALUES('%s', '%s', '%s', '%s')"%(order_id,username, quantity, date))
+    cur.execute("INSERT INTO orders VALUES(%s, %s, %s, %s)"%(order_id,username, quantity, date))
     app.mysql.connection.commit()
     for i in products:
-        cur.execute("INSERT INTO products_in_order VALUES('%s', '%s')"%(order_id, i))
+        cur.execute("INSERT INTO products_in_order VALUES(%s, %s)"%(order_id, i))
         app.mysql.connection.commit()
     cur.close()
     return make_response({'message':'Added to orders'}), 200
@@ -251,7 +251,7 @@ def review_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor()
-    cur.execute("INSERT INTO reviews (username, sku, rating) VALUES('%s', '%s', '%s')"%(username, sku, review))
+    cur.execute("INSERT INTO reviews (username, sku, rating) VALUES(%s, %s, %s)"%(username, sku, review))
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message':'Added to reviews'}), 200

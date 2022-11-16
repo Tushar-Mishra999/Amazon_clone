@@ -44,7 +44,7 @@ def orders_get():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     seller_id=request.args.get('seller_id')
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     cur.execute("SELECT * from order join products_in_order using(order_no) join products using(sku) where seller_id=%s"%(seller_id))
     data = cur.fetchall()
     app.mysql.connection.commit()
@@ -72,7 +72,7 @@ def add_product():
         return make_response({'message':'Missing data'}), 400
     else:
         try:
-            cur = app.mysql.connection.cursor()
+            cur = app.mysql.connection.cursor(cur.DictCursor)
             cur.execute("INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"%(sku, name, description, images, reg_price, inventory, seller_id, category))
             app.mysql.connection.commit()
             if keywords:
@@ -96,7 +96,7 @@ def categories_get():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     cur.execute("SELECT * from categories")
     data = cur.fetchall()
     app.mysql.connection.commit()

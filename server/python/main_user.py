@@ -42,7 +42,7 @@ def products():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     if request.args.get('sku'):
         cur.execute('select * from products where sku = %s', (request.args.get('sku'),))
         result=cur.fetchone()
@@ -79,7 +79,7 @@ def category():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     if request.args.get('category'):
         cur.execute('select * from products where category = %s', (request.args.get('category'),))
         result=cur.fetchall()
@@ -99,7 +99,7 @@ def search():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     if request.args.get('query'):
         keywords=request.args.get('query').split()
         query='select * from products where sku in (select sku from keywords where '
@@ -126,7 +126,7 @@ def cart_get():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     if request.args.get('username'):
         cur.execute('select * from cart join products using(sku) where username = %s', (request.args.get('username'),))
         result=cur.fetchall()
@@ -150,7 +150,7 @@ def cart_post():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     cur.execute("INSERT INTO cart VALUES(%s, %s, %s)"%(username, sku, quantity))
     app.mysql.connection.commit()
     cur.close()
@@ -167,7 +167,7 @@ def cart_delete():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     cur.execute("DELETE FROM cart WHERE username = %s AND sku = %s"%(username, sku))
     app.mysql.connection.commit()
     cur.close()
@@ -181,7 +181,7 @@ def orders_get():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     if request.args.get('username'):
         cur.execute('select * from orders where username = %s', (request.args.get('username'),))
         result=cur.fetchall()
@@ -207,7 +207,7 @@ def order_post():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     cur.execute("INSERT INTO orders VALUES(%s, %s, %s, %s)"%(order_id,username, quantity, date))
     app.mysql.connection.commit()
     for i in products:
@@ -224,7 +224,7 @@ def order_get():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     if request.args.get('order_id'):
         cur.execute('select * from orders where order_id = %s', (request.args.get('order_id'),))
         result=cur.fetchall()
@@ -250,7 +250,7 @@ def review_post():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    cur = app.mysql.connection.cursor()
+    cur = app.mysql.connection.cursor(cur.DictCursor)
     cur.execute("INSERT INTO reviews (username, sku, rating) VALUES(%s, %s, %s)"%(username, sku, review))
     app.mysql.connection.commit()
     cur.close()

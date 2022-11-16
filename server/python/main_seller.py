@@ -29,6 +29,8 @@ app.config['MYSQL_DB'] = 'ecommerce'
 app.config['JSON_SORT_KEYS'] = False
 app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
 
+app.mysql = MySQL(app)
+
 app.get('/')
 def home():
     return make_response({'message':'Home'})
@@ -66,12 +68,34 @@ def add_product():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
+    if not sku or not name or not reg_price or not seller_id or not category or not description or not images or not inventory or not keywords:
+        return make_response({'message':'Missing data'}), 400
+    else:
+        cur = app.mysql.connection.cursor()
+        cur.execute("INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"%(sku, name, description, images, reg_price, inventory, seller_id, category))
+        app.mysql.connection.commit()
+        if keywords:
+            keywords = eval(keywords)
+            for keyword in keywords:
+                cur.execute("INSERT INTO keywords VALUES (%s,%s)"%(keyword,sku))
+                app.mysql.connection.commit()
+        cur.close()
+        return make_response({'message':'Product added'}), 200
+
+@app.get('/categories')
+def categories_get():
+    try:
+        app.mysql.connection.commit()
+    except OperationalError as SQLdbError:
+        if "Lost connection" not in str(SQLdbError):
+            return SQLdbError.__dict__
+        app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor()
-    cur.execute("INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"%(sku, name, description, images, reg_price, inventory, seller_id, category))
+    cur.execute("SELECT * from categories")
+    data = cur.fetchall()
     app.mysql.connection.commit()
     cur.close()
-    return make_response({'message':'Product added'}), 200
-
+    return make_response({'data':data}), 200
 
 @app.get('/routes')
 def routes():

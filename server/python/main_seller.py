@@ -76,7 +76,7 @@ def add_product():
             cur.execute("INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"%(sku, name, description, images, reg_price, inventory, seller_id, category))
             app.mysql.connection.commit()
             if keywords:
-                keywords = eval(keywords)
+                keywords = keywords.split(',')
                 for keyword in keywords:
                     cur.execute("INSERT INTO keywords VALUES (%s,%s)"%(keyword,sku))
                     app.mysql.connection.commit()

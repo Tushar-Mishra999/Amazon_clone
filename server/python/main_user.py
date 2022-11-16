@@ -43,12 +43,12 @@ def products():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    if request.args.get('sku'):
+    if request.args.get('sku') and request.args.get('username'):
         cur.execute('select * from products where sku = %s', (request.args.get('sku'),))
         result=cur.fetchone()
         if result:
-            if result['promo_price']==0:
-                del result['promo_price']
+            if result['Promo_price']==0:
+                del result['Promo_price']
             cur.execute('select avg(rating) as rating from reviews where sku = %s', (request.args.get('sku'),))
             rating=cur.fetchone()
             if rating['rating']:
@@ -66,7 +66,8 @@ def products():
         result=cur.fetchall()
         cur.close()
         if result:
-            result['images']=eval(result['images'])
+            for i in range(len(result)):
+                result[i]['Images']=eval(result[i]['Images'])
             return make_response({'message':'Products found', 'products':result}), 200
         else:
             return make_response({'message':'Products not found'}), 404
@@ -85,6 +86,8 @@ def category():
         result=cur.fetchall()
         cur.close()
         if result:
+            for i in range(len(result)):
+                result[i]['Images']=eval(result[i]['Images'])
             return make_response({'message':'Products found', 'products':result}), 200
         else:
             return make_response({'message':'Products not found'}), 404

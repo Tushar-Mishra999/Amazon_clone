@@ -11,12 +11,13 @@
             "module": "flask",
             "env": {
                 "FLASK_APP": "main_seller.py",
-                "FLASK_DEBUG": "1",
-                "FLASk_PORT": "5001"
+                "FLASK_DEBUG": "1"
             },
             "args": [
-                "run"
+                "run",
+                "--no-debugger"
             ],
+            "jinja": true,
             "justMyCode": true
         },
         {
@@ -28,6 +29,11 @@
                 "FLASK_APP": "main_user.py",
                 "FLASK_DEBUG": "1"
             },
+            "args": [
+                "run",
+                "--no-debugger"
+            ],
+            "jinja": true,
             "justMyCode": true
         }
     ]

@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 # from jwt import algorithms, ExpiredSignatureError, decode
 from functools import wraps
 from MySQLdb import OperationalError
-import MySQLdb.cursors as cur
+import MySQLdb.cursors as curdict
 import pandas as pd
 import uuid
 

@@ -71,16 +71,22 @@ def add_product():
     if not sku or not name or not reg_price or not seller_id or not category or not description or not images or not inventory or not keywords:
         return make_response({'message':'Missing data'}), 400
     else:
-        cur = app.mysql.connection.cursor()
-        cur.execute("INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"%(sku, name, description, images, reg_price, inventory, seller_id, category))
-        app.mysql.connection.commit()
-        if keywords:
-            keywords = eval(keywords)
-            for keyword in keywords:
-                cur.execute("INSERT INTO keywords VALUES (%s,%s)"%(keyword,sku))
-                app.mysql.connection.commit()
-        cur.close()
-        return make_response({'message':'Product added'}), 200
+        try:
+            cur = app.mysql.connection.cursor()
+            cur.execute("INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"%(sku, name, description, images, reg_price, inventory, seller_id, category))
+            app.mysql.connection.commit()
+            if keywords:
+                keywords = eval(keywords)
+                for keyword in keywords:
+                    cur.execute("INSERT INTO keywords VALUES (%s,%s)"%(keyword,sku))
+                    app.mysql.connection.commit()
+            cur.close()
+            return make_response({'message':'Product added'}), 200
+        except OperationalError as SQLdbError:
+            if "Duplicate entry" in str(SQLdbError):
+                return make_response({'message':'Product already exists'}), 400
+            else:
+                return SQLdbError.__dict__
 
 @app.get('/categories')
 def categories_get():

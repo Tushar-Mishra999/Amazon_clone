@@ -11,8 +11,8 @@ import pandas as pd
 import uuid
 import boto3
 
-application=app=Flask(__name__)
-cros=CORS(app)
+application = app = Flask(__name__)
+cros = CORS(app)
 
 limiter = Limiter(
     application,
@@ -32,8 +32,11 @@ app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
 app.mysql = MySQL(app)
 
 app.get('/')
+
+
 def home():
-    return make_response({'message':'Home'})
+    return make_response({'message': 'Home'})
+
 
 @app.get('/orders')
 def orders_get():
@@ -43,13 +46,15 @@ def orders_get():
         if "Lost connection" not in str(SQLdbError):
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
-    seller_id=request.args.get('seller_id')
+    seller_id = request.args.get('seller_id')
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("SELECT * from order join products_in_order using(order_no) join products using(sku) where seller_id=%s"%(seller_id))
+    cur.execute(
+        "SELECT * from order join products_in_order using(order_no) join products using(sku) where seller_id=%s" % (seller_id))
     data = cur.fetchall()
     app.mysql.connection.commit()
     cur.close()
-    return make_response({'data':data}), 200
+    return make_response({'data': data}), 200
+
 
 @app.post('/add_product')
 def add_product():
@@ -62,6 +67,7 @@ def add_product():
     description = data['description']
     images = data['images']
     inventory = data['inventory']
+    keywords = data['keywords']
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:
@@ -69,26 +75,29 @@ def add_product():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     if not sku or not name or not reg_price or not seller_id or not category or not description or not images or not inventory or not keywords:
-        return make_response({'message':'Missing data'}), 400
+        return make_response({'message': 'Missing data'}), 400
     else:
         try:
             cur = app.mysql.connection.cursor(curdict.DictCursor)
-            cur.execute("INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"%(sku, name, description, images, reg_price, inventory, seller_id, category))
+            cur.execute("INSERT INTO products(`SKU`, `Title`,`Description`,`Images`,`Reg_price`,`Inventory`,`seller_id`,`category`) VALUES('%s', '%s', '%s', '%s', % s, % s, '%s', '%s')" % (
+                sku, name, description, str(images).replace("'", '"'), reg_price, inventory, seller_id, category))
             app.mysql.connection.commit()
             if keywords:
                 keywords = keywords.split(',')
                 for keyword in keywords:
-                    cur.execute("INSERT INTO keywords VALUES (%s,%s)"%(keyword,sku))
+                    cur.execute("INSERT INTO keywords VALUES ('%s','%s')" %
+                                (keyword, sku))
                     app.mysql.connection.commit()
             cur.close()
-            return make_response({'message':'Product added'}), 200
+            return make_response({'message': 'Product added'}), 200
         except OperationalError as SQLdbError:
             if "Duplicate entry" in str(SQLdbError):
-                return make_response({'message':'Product already exists'}), 400
+                return make_response({'message': 'Product already exists'}), 400
             else:
-                return SQLdbError.__dict__
+                return make_response({'message': str(SQLdbError.__dict__)}), 400
 
-@app.get('/categories')
+
+@ app.get('/categories')
 def categories_get():
     try:
         app.mysql.connection.commit()
@@ -101,14 +110,33 @@ def categories_get():
     data = cur.fetchall()
     app.mysql.connection.commit()
     cur.close()
-    return make_response({'data':data}), 200
+    return make_response({'data': data}), 200
 
-@app.get('/routes')
+
+@ app.get('/products')
+def products_get():
+    try:
+        app.mysql.connection.commit()
+    except OperationalError as SQLdbError:
+        if "Lost connection" not in str(SQLdbError):
+            return SQLdbError.__dict__
+        app.mysql.connection = MySQL(app)
+    cur = app.mysql.connection.cursor(curdict.DictCursor)
+    cur.execute("SELECT * from products where seller_id=%s" %
+                (request.args.get('seller_id')))
+    data = cur.fetchall()
+    app.mysql.connection.commit()
+    cur.close()
+    return make_response({'data': data}), 200
+
+
+@ app.get('/routes')
 def routes():
     routes = []
     for route in app.url_map.iter_rules():
         routes.append('%s' % route)
-    return make_response({'routes':routes}), 200
+    return make_response({'routes': routes}), 200
+
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True, port=5001)

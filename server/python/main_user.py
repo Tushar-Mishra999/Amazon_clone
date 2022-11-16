@@ -10,8 +10,8 @@ import MySQLdb.cursors as curdict
 import pandas as pd
 import uuid
 
-application=app=Flask(__name__)
-cros=CORS(app)
+application = app = Flask(__name__)
+cros = CORS(app)
 
 limiter = Limiter(
     application,
@@ -31,8 +31,11 @@ app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
 app.mysql = MySQL(app)
 
 app.get('/')
+
+
 def home():
-    return make_response({'message':'Home'})
+    return make_response({'message': 'Home'})
+
 
 @app.get('/products')
 def products():
@@ -44,33 +47,39 @@ def products():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('sku') and request.args.get('username'):
-        cur.execute('select * from products where sku = %s', (request.args.get('sku'),))
-        result=cur.fetchone()
+        cur.execute('select * from products where sku = %s',
+                    (request.args.get('sku'),))
+        result = cur.fetchone()
         if result:
-            if result['Promo_price']==0:
+            if result['Images']:
+                result['Images'] = eval(result['Images'])
+            if result['Promo_price'] == 0:
                 del result['Promo_price']
-            cur.execute('select avg(rating) as rating from reviews where sku = %s', (request.args.get('sku'),))
-            rating=cur.fetchone()
+            cur.execute(
+                'select avg(rating) as rating from reviews where sku = %s', (request.args.get('sku'),))
+            rating = cur.fetchone()
             if rating['rating']:
-                result['rating']=rating['rating']
-            cur.execute('select * from reviews where sku = %s and username = %s', (request.args.get('sku'),request.args.get('username')))
-            review=cur.fetchone()
+                result['rating'] = rating['rating']
+            cur.execute('select * from reviews where sku = %s and username = %s',
+                        (request.args.get('sku'), request.args.get('username')))
+            review = cur.fetchone()
             if review:
-                result['review']=review['rating']
+                result['review'] = review['rating']
             cur.close()
-            return make_response({'message':'Product found', 'product':result}), 200
+            return make_response({'message': 'Product found', 'product': result}), 200
         else:
-            return make_response({'message':'Product not found'}), 404
+            return make_response({'message': 'Product not found'}), 404
     else:
         cur.execute('select * from products')
-        result=cur.fetchall()
+        result = cur.fetchall()
         cur.close()
         if result:
             for i in range(len(result)):
-                result[i]['Images']=eval(result[i]['Images'])
-            return make_response({'message':'Products found', 'products':result}), 200
+                result[i]['Images'] = eval(result[i]['Images'])
+            return make_response({'message': 'Products found', 'products': result}), 200
         else:
-            return make_response({'message':'Products not found'}), 404
+            return make_response({'message': 'Products not found'}), 404
+
 
 @app.get('/category')
 def category():
@@ -82,17 +91,19 @@ def category():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('category'):
-        cur.execute('select * from products where category = %s', (request.args.get('category'),))
-        result=cur.fetchall()
+        cur.execute('select * from products where category = %s',
+                    (request.args.get('category'),))
+        result = cur.fetchall()
         cur.close()
         if result:
             for i in range(len(result)):
-                result[i]['Images']=eval(result[i]['Images'])
-            return make_response({'message':'Products found', 'products':result}), 200
+                result[i]['Images'] = eval(result[i]['Images'])
+            return make_response({'message': 'Products found', 'products': result}), 200
         else:
-            return make_response({'message':'Products not found'}), 404
+            return make_response({'message': 'Products not found'}), 404
     else:
-        return make_response({'message':'Category not found'}), 404
+        return make_response({'message': 'Category not found'}), 404
+
 
 @app.get('/search')
 def search():
@@ -104,22 +115,24 @@ def search():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('query'):
-        keywords=request.args.get('query').split()
-        query='select * from products where sku in (select sku from keywords where '
+        keywords = request.args.get('query').split()
+        query = 'select * from products where sku in (select sku from keywords where '
         for keyword in keywords:
-            query+='name like "%s" or '
-        query=query[:-3]
+            query += 'name like "%s" or '
+        query = query[:-3]
         cur.execute(query, tuple(['%'+keyword+'%' for keyword in keywords]))
-        result=cur.fetchall()
-        cur.execute('select * from products where name like %s', ('%'+request.args.get('query')+'%',))
-        result+=cur.fetchall()
+        result = cur.fetchall()
+        cur.execute('select * from products where name like %s',
+                    ('%'+request.args.get('query')+'%',))
+        result += cur.fetchall()
         cur.close()
         if result:
-            return make_response({'message':'Products found', 'products':result}), 200
+            return make_response({'message': 'Products found', 'products': result}), 200
         else:
-            return make_response({'message':'Products not found'}), 404
+            return make_response({'message': 'Products not found'}), 404
     else:
-        return make_response({'message':'Query not found'}), 404
+        return make_response({'message': 'Query not found'}), 404
+
 
 @app.get('/cart')
 def cart_get():
@@ -131,15 +144,17 @@ def cart_get():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('username'):
-        cur.execute('select * from cart join products using(sku) where username = %s', (request.args.get('username'),))
-        result=cur.fetchall()
+        cur.execute('select * from cart join products using(sku) where username = %s',
+                    (request.args.get('username'),))
+        result = cur.fetchall()
         cur.close()
         if result:
-            return make_response({'message':'Cart found', 'cart':result}), 200
+            return make_response({'message': 'Cart found', 'cart': result}), 200
         else:
-            return make_response({'message':'Cart not found'}), 404
+            return make_response({'message': 'Cart not found'}), 404
     else:
-        return make_response({'message':'Username not found'}), 404
+        return make_response({'message': 'Username not found'}), 404
+
 
 @app.post('/cart')
 def cart_post():
@@ -154,10 +169,12 @@ def cart_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("INSERT INTO cart VALUES(%s, %s, %s)"%(username, sku, quantity))
+    cur.execute("INSERT INTO cart VALUES(%s, %s, %s)" %
+                (username, sku, quantity))
     app.mysql.connection.commit()
     cur.close()
-    return make_response({'message':'Added to cart'}), 200
+    return make_response({'message': 'Added to cart'}), 200
+
 
 @app.delete('/cart')
 def cart_delete():
@@ -171,10 +188,12 @@ def cart_delete():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("DELETE FROM cart WHERE username = %s AND sku = %s"%(username, sku))
+    cur.execute("DELETE FROM cart WHERE username = %s AND sku = %s" %
+                (username, sku))
     app.mysql.connection.commit()
     cur.close()
-    return make_response({'message':'Deleted from cart'}), 200
+    return make_response({'message': 'Deleted from cart'}), 200
+
 
 @app.get('/orders')
 def orders_get():
@@ -186,24 +205,26 @@ def orders_get():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('username'):
-        cur.execute('select * from orders where username = %s', (request.args.get('username'),))
-        result=cur.fetchall()
+        cur.execute('select * from orders where username = %s',
+                    (request.args.get('username'),))
+        result = cur.fetchall()
         cur.close()
         if result:
-            return make_response({'message':'Orders found', 'orders':result}), 200
+            return make_response({'message': 'Orders found', 'orders': result}), 200
         else:
-            return make_response({'message':'Orders not found'}), 404
+            return make_response({'message': 'Orders not found'}), 404
     else:
-        return make_response({'message':'Username not found'}), 404
+        return make_response({'message': 'Username not found'}), 404
+
 
 @app.post('/order')
 def order_post():
     data = request.get_json()
-    date=datetime.datetime.now()
+    date = datetime.datetime.now()
     username = data['username']
     products = data['products']
     quantity = data['quantity']
-    order_id=uuid.uuid4()
+    order_id = uuid.uuid4()
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:
@@ -211,13 +232,16 @@ def order_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("INSERT INTO orders VALUES(%s, %s, %s, %s)"%(order_id,username, quantity, date))
+    cur.execute("INSERT INTO orders VALUES(%s, %s, %s, %s)" %
+                (order_id, username, quantity, date))
     app.mysql.connection.commit()
     for i in products:
-        cur.execute("INSERT INTO products_in_order VALUES(%s, %s)"%(order_id, i))
+        cur.execute("INSERT INTO products_in_order VALUES(%s, %s)" %
+                    (order_id, i))
         app.mysql.connection.commit()
     cur.close()
-    return make_response({'message':'Added to orders'}), 200
+    return make_response({'message': 'Added to orders'}), 200
+
 
 @app.get('/order')
 def order_get():
@@ -229,17 +253,20 @@ def order_get():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('order_id'):
-        cur.execute('select * from orders where order_id = %s', (request.args.get('order_id'),))
-        result=cur.fetchall()
-        cur.execute('select * from products_in_order where order_id = %s', (request.args.get('order_id'),))
-        result1=cur.fetchall()
+        cur.execute('select * from orders where order_id = %s',
+                    (request.args.get('order_id'),))
+        result = cur.fetchall()
+        cur.execute('select * from products_in_order where order_id = %s',
+                    (request.args.get('order_id'),))
+        result1 = cur.fetchall()
         cur.close()
         if result and result1:
-            return make_response({'message':'Order found', 'order_details':result, 'order_products':result1}), 200
+            return make_response({'message': 'Order found', 'order_details': result, 'order_products': result1}), 200
         else:
-            return make_response({'message':'Order not found'}), 404
+            return make_response({'message': 'Order not found'}), 404
     else:
-        return make_response({'message':'Order id not found'}), 404
+        return make_response({'message': 'Order id not found'}), 404
+
 
 @app.post('/review')
 def review_post():
@@ -254,17 +281,20 @@ def review_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("INSERT INTO reviews (username, sku, rating) VALUES(%s, %s, %s)"%(username, sku, review))
+    cur.execute("INSERT INTO reviews (username, sku, rating) VALUES(%s, %s, %s)" % (
+        username, sku, review))
     app.mysql.connection.commit()
     cur.close()
-    return make_response({'message':'Added to reviews'}), 200
+    return make_response({'message': 'Added to reviews'}), 200
+
 
 @app.get('/routes')
 def routes():
     routes = []
     for route in app.url_map.iter_rules():
         routes.append('%s' % route)
-    return make_response({'routes':routes}), 200
+    return make_response({'routes': routes}), 200
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

@@ -37,6 +37,17 @@ app.get('/')
 def home():
     return make_response({'message': 'Home'})
 
+@app.post('/register')
+def register():
+    data = request.get_json()
+    name = data['name']
+    email = data['email']
+    cur = app.mysql.connection.cursor()
+    cur.execute("INSERT INTO users (name, email) VALUES (%s, %s)", (name, email))
+    app.mysql.connection.commit()
+    cur.close()
+    return make_response({'message': 'User created'})
+
 
 @app.get('/orders')
 def orders_get():
@@ -76,7 +87,7 @@ def add_product():
     s3 = session.resource('s3')
     bucket = s3.Bucket('ecommercecloneproductimages')
     for i in range(len(images)):
-        bucket.put_object(Key=sku+f'{i+1}.jpg', Body=images[i])
+        bucket.put_object(Key=sku+f'{i+1}.jpg', Body=bytes(images[i],'utf-8'))
         image_urls.append(f'https://ecommercecloneproductimages.s3.amazonaws.com/{sku+f"{i+1}.jpg"}')
     try:
         app.mysql.connection.commit()
@@ -90,7 +101,7 @@ def add_product():
         try:
             cur = app.mysql.connection.cursor(curdict.DictCursor)
             cur.execute("INSERT INTO products(`SKU`, `Title`,`Description`,`Images`,`Reg_price`,`Inventory`,`seller_id`,`category`) VALUES('%s', '%s', '%s', '%s', % s, % s, '%s', '%s')" % (
-                sku, name, description, str(images).replace("'", '"'), reg_price, inventory, seller_id, category))
+                sku, name, description, str(image_urls).replace("'", '"'), reg_price, inventory, seller_id, category))
             app.mysql.connection.commit()
             if keywords:
                 keywords = keywords.split(',')

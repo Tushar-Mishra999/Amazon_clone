@@ -82,10 +82,9 @@ def add_product():
     keywords = data['keywords']
     image_urls = []
     s3 = boto3.client('s3')
-    bucket = s3.Bucket('ecommercecloneproductimages')
     for i in range(len(images)):
-        bucket.put_object(
-            Key=f'images/{sku}_{i+1}.png', Body=base64.b64decode(bytes(images[i], 'utf-8')))
+        s3.put_object(
+            Key=f'images/{sku}_{i+1}.png', Body=base64.b64decode(bytes(images[i], 'utf-8')), Bucket='ecommercecloneproductimages')
         image_urls.append(
             f'https://ecommercecloneproductimages.s3.amazonaws.com/images/{sku+f"_{i+1}.png"}')
     try:

@@ -122,11 +122,14 @@ def products_get():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("SELECT * from products where seller_id=%s" %
-                (request.args.get('seller_id')))
+    query = "SELECT * from products where seller_id=%s"
+    arguments = (str(request.args.get('seller_id')),)
+    cur.execute(query,arguments)
     data = cur.fetchall()
-    app.mysql.connection.commit()
+    # app.mysql.connection.commit()
     cur.close()
+    for i in data:
+        i['Images'] = eval(i['Images'])
     return make_response({'data': data}), 200
 
 

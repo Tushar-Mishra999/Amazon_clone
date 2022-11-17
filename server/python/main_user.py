@@ -74,8 +74,8 @@ def products():
         result = cur.fetchall()
         cur.close()
         if result:
-            for i in range(len(result)):
-                result[i]['Images'] = eval(result[i]['Images'])
+            for i in result:
+                i['Images'] = eval(i['Images'])
             return make_response({'message': 'Products found', 'products': result}), 200
         else:
             return make_response({'message': 'Products not found'}), 404
@@ -96,8 +96,8 @@ def category():
         result = cur.fetchall()
         cur.close()
         if result:
-            for i in range(len(result)):
-                result[i]['Images'] = eval(result[i]['Images'])
+            for i in result:
+                i['Images'] = eval(i['Images'])
             return make_response({'message': 'Products found', 'products': result}), 200
         else:
             return make_response({'message': 'Products not found'}), 404

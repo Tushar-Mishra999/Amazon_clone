@@ -54,6 +54,9 @@ class HomeServices {
       images: [],
       category: '',
       price: 0,
+      keywords: '',
+      sellerId: '',
+      id: ''
     );
 
     try {

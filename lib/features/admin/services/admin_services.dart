@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:amazon_clone/constants/error_handling.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/constants/utils.dart';
+import 'package:amazon_clone/models/cateogory.dart';
 import 'package:amazon_clone/models/order.dart';
 import 'package:amazon_clone/models/product.dart';
 import 'package:amazon_clone/models/sales.dart';
@@ -11,6 +11,7 @@ import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class AdminServices {
@@ -20,22 +21,27 @@ class AdminServices {
     required String description,
     required double price,
     required double quantity,
-    required String category,
-    required List<File> images,
+    String? category,
+    required String keywords,
+    required List<XFile> images,
+    required String sellerId,
+    required String id,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
-      final cloudinary = CloudinaryPublic('dniajb7qc', 'lbrb0cxs');
+      // final cloudinary = CloudinaryPublic('dniajb7qc', 'lbrb0cxs');
       List<String> imageUrls = [];
 
       for (int i = 0; i < images.length; i++) {
-        CloudinaryResponse res = await cloudinary.uploadFile(
-          CloudinaryFile.fromFile(images[i].path, folder: name),
-        );
-        imageUrls.add(res.secureUrl);
+        // CloudinaryResponse res = await cloudinary.uploadFile(
+        //   CloudinaryFile.fromFile(images[i].path, folder: name),
+        // );
+        var bytes = await images[i].readAsBytes();
+        String base64Image = base64Encode(bytes);
+        imageUrls.add(base64Image);
       }
-      
+
       Product product = Product(
         name: name,
         description: description,
@@ -43,10 +49,13 @@ class AdminServices {
         images: imageUrls,
         category: category,
         price: price,
+        keywords: keywords,
+        sellerId: sellerId,
+        id: id,
       );
 
       http.Response res = await http.post(
-        Uri.parse('$uri/admin/add-product'),
+        Uri.parse('$kdigitalOceanUri/add_product'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,
@@ -54,7 +63,6 @@ class AdminServices {
         body: product.toJson(),
       );
 
-      print(res.statusCode);
       httpErrorHandle(
         response: res,
         context: context,
@@ -68,26 +76,48 @@ class AdminServices {
     }
   }
 
+  //getall categories
+  Future<List<Categories>> fetchCategory(BuildContext context) async {
+    List<Categories> categories = [];
+    try {
+      final response =
+          await http.get(Uri.parse("$kdigitalOceanUri/categories"));
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+        categories = (body["data"] as List)
+            .map((data) => Categories.fromJson(data))
+            .toList();
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return categories;
+  }
+
   // get all the products
   Future<List<Product>> fetchAllProducts(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     List<Product> productList = [];
     try {
-      http.Response res =
-          await http.get(Uri.parse('$uri/admin/get-products'), headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'x-auth-token': userProvider.user.token,
-      });
+      http.Response res = await http.get(
+          Uri.parse(
+              '$kdigitalOceanUri/products?seller_id=${userProvider.user.email}'),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': userProvider.user.token,
+          });
 
       httpErrorHandle(
         response: res,
         context: context,
         onSuccess: () {
-          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+          for (int i = 0; i < jsonDecode(res.body)["data"].length; i++) {
             productList.add(
               Product.fromJson(
                 jsonEncode(
-                  jsonDecode(res.body)[i],
+                  jsonDecode(res.body)['data'][i],
                 ),
               ),
             );

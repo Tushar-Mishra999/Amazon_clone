@@ -81,11 +81,7 @@ def add_product():
     inventory = data['inventory']
     keywords = data['keywords']
     image_urls = []
-    session = boto3.Session(
-        aws_access_key_id='AKIAT77NECFDGHZNRHUA',
-        aws_secret_access_key='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'
-    )
-    s3 = session.resource('s3')
+    s3 = boto3.client('s3')
     bucket = s3.Bucket('ecommercecloneproductimages')
     for i in range(len(images)):
         bucket.put_object(

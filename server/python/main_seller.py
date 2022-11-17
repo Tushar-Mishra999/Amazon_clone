@@ -87,7 +87,7 @@ def add_product():
         bucket.put_object(
             Key=f'images/{sku}_{i+1}.png', Body=base64.b64decode(bytes(images[i], 'utf-8')))
         image_urls.append(
-            f'https://ecommercecloneproductimages.s3.amazonaws.com/{sku+f"_{i+1}.png"}')
+            f'https://ecommercecloneproductimages.s3.amazonaws.com/images/{sku+f"_{i+1}.png"}')
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:

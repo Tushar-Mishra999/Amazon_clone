@@ -10,6 +10,7 @@ import MySQLdb.cursors as curdict
 import pandas as pd
 import uuid
 import boto3
+import base64
 
 application = app = Flask(__name__)
 cros = CORS(app)
@@ -80,17 +81,12 @@ def add_product():
     inventory = data['inventory']
     keywords = data['keywords']
     image_urls = []
-    session = boto3.Session(
-        aws_access_key_id='AKIAT77NECFDGHZNRHUA',
-        aws_secret_access_key='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'
-    )
-    s3 = session.resource('s3')
-    bucket = s3.Bucket('ecommercecloneproductimages')
+    s3 = boto3.client('s3')
     for i in range(len(images)):
-        bucket.put_object(
-            Key=f'images/{sku}_{i+1}.png', Body=bytes(images[i], 'utf-8'))
+        s3.put_object(
+            Key=f'images/{sku}_{i+1}.png', Body=base64.b64decode(bytes(images[i], 'utf-8')), Bucket='ecommercecloneproductimages')
         image_urls.append(
-            f'https://ecommercecloneproductimages.s3.amazonaws.com/{sku+f"_{i+1}.png"}')
+            f'https://ecommercecloneproductimages.s3.amazonaws.com/images/{sku+f"_{i+1}.png"}')
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:
@@ -120,7 +116,7 @@ def add_product():
                 return make_response({'message': str(SQLdbError.__dict__)}), 400
 
 
-@ app.get('/categories')
+@app.get('/categories')
 def categories_get():
     try:
         app.mysql.connection.commit()
@@ -136,7 +132,7 @@ def categories_get():
     return make_response({'data': data}), 200
 
 
-@ app.get('/products')
+@app.get('/products')
 def products_get():
     try:
         app.mysql.connection.commit()
@@ -156,7 +152,20 @@ def products_get():
     return make_response({'data': data}), 200
 
 
-@ app.get('/routes')
+@app.delete('/product')
+def delete_product():
+    try:
+        sku = request.args.get('sku')
+        cur = app.mysql.connection.cursor(curdict.DictCursor)
+        cur.execute("DELETE FROM products WHERE SKU='%s'" % (sku))
+        app.mysql.connection.commit()
+        cur.close()
+        return make_response({'message': 'Product deleted'}), 200
+    except OperationalError as SQLdbError:
+        return make_response({'message': str(SQLdbError)}), 400
+
+
+@app.get('/routes')
 def routes():
     routes = []
     for route in app.url_map.iter_rules():

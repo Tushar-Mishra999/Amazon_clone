@@ -10,6 +10,7 @@ import MySQLdb.cursors as curdict
 import pandas as pd
 import uuid
 import boto3
+import base64
 
 application = app = Flask(__name__)
 cros = CORS(app)
@@ -88,7 +89,7 @@ def add_product():
     bucket = s3.Bucket('ecommercecloneproductimages')
     for i in range(len(images)):
         bucket.put_object(
-            Key=f'images/{sku}_{i+1}.png', Body=bytes(images[i], 'utf-8'))
+            Key=f'images/{sku}_{i+1}.png', Body=base64.b64decode(bytes(images[i], 'utf-8')))
         image_urls.append(
             f'https://ecommercecloneproductimages.s3.amazonaws.com/{sku+f"_{i+1}.png"}')
     try:

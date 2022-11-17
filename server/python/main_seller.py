@@ -87,8 +87,8 @@ def add_product():
     s3 = session.resource('s3')
     bucket = s3.Bucket('ecommercecloneproductimages')
     for i in range(len(images)):
-        bucket.put_object(Key=sku+f' {i+1}.jpg', Body=bytes(images[i],'utf-8'))
-        image_urls.append(f'https://ecommercecloneproductimages.s3.amazonaws.com/{sku+f"{i+1}.jpg"}')
+        bucket.put_object(Key=f'images/{sku}_{i+1}.png', Body=bytes(images[i],'utf-8'))
+        image_urls.append(f'https://ecommercecloneproductimages.s3.amazonaws.com/{sku+f"_{i+1}.png"}')
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:

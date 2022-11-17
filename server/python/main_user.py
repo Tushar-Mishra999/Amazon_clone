@@ -36,6 +36,16 @@ app.get('/')
 def home():
     return make_response({'message': 'Home'})
 
+@app.post('/register')
+def register():
+    data = request.get_json()
+    name = data['name']
+    email = data['email']
+    cur = app.mysql.connection.cursor()
+    cur.execute("INSERT INTO users (name, email) VALUES (%s, %s)", (name, email))
+    app.mysql.connection.commit()
+    cur.close()
+    return make_response({'message': 'User created'})
 
 @app.get('/products')
 def products():

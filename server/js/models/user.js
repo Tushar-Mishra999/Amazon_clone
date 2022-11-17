@@ -28,8 +28,8 @@ const userSchema = mongoose.Schema({
     default: "",
   },
   type: {
+    required:true,
     type: String,
-    default: "user",
   },
   cart:[
     {

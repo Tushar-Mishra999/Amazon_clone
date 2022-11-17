@@ -30,11 +30,11 @@ app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
 
 app.mysql = MySQL(app)
 
-app.get('/')
 
-
+@app.get('/')
 def home():
     return make_response({'message': 'Home'})
+
 
 @app.post('/register')
 def register():
@@ -46,6 +46,7 @@ def register():
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'User created'})
+
 
 @app.get('/products')
 def products():

@@ -31,11 +31,11 @@ app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
 
 app.mysql = MySQL(app)
 
-app.get('/')
 
-
+@app.get('/')
 def home():
     return make_response({'message': 'Home'})
+
 
 @app.post('/register')
 def register():
@@ -87,8 +87,10 @@ def add_product():
     s3 = session.resource('s3')
     bucket = s3.Bucket('ecommercecloneproductimages')
     for i in range(len(images)):
-        bucket.put_object(Key=f'images/{sku}_{i+1}.png', Body=bytes(images[i],'utf-8'))
-        image_urls.append(f'https://ecommercecloneproductimages.s3.amazonaws.com/{sku+f"_{i+1}.png"}')
+        bucket.put_object(
+            Key=f'images/{sku}_{i+1}.png', Body=bytes(images[i], 'utf-8'))
+        image_urls.append(
+            f'https://ecommercecloneproductimages.s3.amazonaws.com/{sku+f"_{i+1}.png"}')
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:
@@ -145,7 +147,7 @@ def products_get():
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     query = "SELECT * from products where seller_id=%s"
     arguments = (str(request.args.get('seller_id')),)
-    cur.execute(query,arguments)
+    cur.execute(query, arguments)
     data = cur.fetchall()
     # app.mysql.connection.commit()
     cur.close()

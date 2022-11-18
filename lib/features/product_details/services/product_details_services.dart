@@ -42,6 +42,34 @@ class ProductDetailsServices {
     }
   }
 
+  Future<Product> fetchProduct(BuildContext context, String sku) async {
+     Product product = Product(
+        name: '',
+        description: '',
+        quantity: 0,
+        images: [],
+        category: '',
+        price: 0,
+        keywords: '',
+        sellerId: '',
+        id: '');
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final response = await http.get(Uri.parse(
+          "$userUri/products?sku=$sku&username=${userProvider.user.email}"));
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+        product = Product.fromMap(body["product"]);
+        
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return product;
+  }
+
   void rateProduct({
     required BuildContext context,
     required Product product,

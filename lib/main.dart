@@ -1,6 +1,5 @@
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/features/auth/screens/auth_screen.dart';
-import 'package:amazon_clone/features/home/screens/home_screen.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:amazon_clone/router.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AMAZON',
+      title: 'E-COMM APP',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         backgroundColor: GlobalVariables.backgroundColor,
@@ -46,10 +45,9 @@ class _MyAppState extends State<MyApp> {
         colorScheme:const ColorScheme.light(primary: GlobalVariables.secondaryColor),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      //  home: Provider.of<UserProvider>(context).user.token.isNotEmpty?
-      //  Provider.of<UserProvider>(context).user.type=='user'?const BottomBar():const AdminScreen()
-      // :const AuthScreen(),
-      home: const AuthScreen(),
+       home: Provider.of<UserProvider>(context).user.token.isNotEmpty?
+       Provider.of<UserProvider>(context).user.type=='user'?const BottomBar():const AdminScreen()
+      :const AuthScreen(),
 
     );
   }

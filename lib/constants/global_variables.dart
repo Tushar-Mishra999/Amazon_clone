@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 String uri = "http://192.168.196.19:3000";
 String kdigitalOceanUri = "https://octopus-app-95tr7.ondigitalocean.app";
+String userUri = "https://ecommerce-app-dbms-project-hazr6.ondigitalocean.app";
 
 class GlobalVariables {
   // COLORS

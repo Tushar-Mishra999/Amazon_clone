@@ -208,7 +208,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: DropdownButton(
-                          value: productCategories[0].title,
+                          value: category,
                           icon: const Icon(Icons.keyboard_arrow_down),
                           items: productCategories.map((Categories item) {
                             return DropdownMenuItem(

@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/widgets/loader.dart';
+
 class ProductDetailScreen extends StatefulWidget {
   static const String routeName = '/product-details';
   final Product product;
@@ -27,22 +29,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ProductDetailsServices();
   double avgRating = 0;
   double myRating = 0;
+   Product product = Product(
+        name: '',
+        description: '',
+        quantity: 0,
+        images: [],
+        category: '',
+        price: 0,
+        keywords: '',
+        sellerId: '',
+        id: '');
+  fetchAllCategories() async {
+    product = await productDetailsServices.fetchProduct(context,widget.product.id);
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
-    double totalRating = 0;
-    for (int i = 0; i < widget.product.rating!.length; i++) {
-      totalRating += widget.product.rating![i].rating;
-      if (widget.product.rating![i].userId ==
-          Provider.of<UserProvider>(context, listen: false).user.id) {
-        myRating = widget.product.rating![i].rating;
-      }
-    }
+    fetchAllCategories();
+    // double totalRating = 0;
+    // for (int i = 0; i < widget.product.rating!.length; i++) {
+    //   totalRating += widget.product.rating![i].rating;
+    //   if (widget.product.rating![i].userId ==
+    //       Provider.of<UserProvider>(context, listen: false).user.id) {
+    //     myRating = widget.product.rating![i].rating;
+    //   }
+    // }
 
-    if (totalRating != 0) {
-      avgRating = totalRating / widget.product.rating!.length;
-    }
+    // if (totalRating != 0) {
+    //   avgRating = totalRating / widget.product.rating!.length;
+    // }
   }
 
   void navigateToSearchScreen(String query) {
@@ -131,7 +148,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: product==null?const Loader():SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -141,11 +158,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.product.id,
+                    product!.id,
                   ),
-                  Stars(
-                    rating: avgRating,
-                  ),
+                  // Stars(
+                  //   rating: avgRating,
+                  // ),
                 ],
               ),
             ),
@@ -155,14 +172,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 horizontal: 10,
               ),
               child: Text(
-                widget.product.name,
+                product!.name,
                 style: const TextStyle(
                   fontSize: 15,
                 ),
               ),
             ),
             CarouselSlider(
-              items: widget.product.images.map(
+              items: product?.images.map(
                 (i) {
                   return Builder(
                     builder: (BuildContext context) => Image.network(
@@ -194,7 +211,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   children: [
                     TextSpan(
-                      text: '\$${widget.product.price}',
+                      text: '\$${product!.price}',
                       style: const TextStyle(
                         fontSize: 22,
                         color: Colors.red,
@@ -207,7 +224,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(widget.product.description),
+              child: Text(product!.description),
             ),
             Container(
               color: Colors.black12,
@@ -244,25 +261,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ),
             ),
-            RatingBar.builder(
-              initialRating: myRating,
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemPadding: const EdgeInsets.symmetric(horizontal: 4),
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: GlobalVariables.secondaryColor,
-              ),
-              onRatingUpdate: (rating) {
-                productDetailsServices.rateProduct(
-                  context: context,
-                  product: widget.product,
-                  rating: rating,
-                );
-              },
-            )
+            // RatingBar.builder(
+            //   initialRating: myRating,
+            //   minRating: 1,
+            //   direction: Axis.horizontal,
+            //   allowHalfRating: true,
+            //   itemCount: 5,
+            //   itemPadding: const EdgeInsets.symmetric(horizontal: 4),
+            //   itemBuilder: (context, _) => const Icon(
+            //     Icons.star,
+            //     color: GlobalVariables.secondaryColor,
+            //   ),
+            //   onRatingUpdate: (rating) {
+            //     productDetailsServices.rateProduct(
+            //       context: context,
+            //       product: widget.product,
+            //       rating: rating,
+            //     );
+            //   },
+            // )
           ],
         ),
       ),

@@ -113,7 +113,7 @@ def category():
         else:
             return make_response({'message': 'Products not found'}), 404
     else:
-        cur.execute('select * from caetgories')
+        cur.execute('select * from categories')
         result = cur.fetchall()
         cur.close()
         if result:

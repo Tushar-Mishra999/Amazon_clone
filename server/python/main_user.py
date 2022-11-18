@@ -113,7 +113,11 @@ def category():
         else:
             return make_response({'message': 'Products not found'}), 404
     else:
-        return make_response({'message': 'Category not found'}), 404
+        cur.execute('select * from caetgories')
+        result = cur.fetchall()
+        cur.close()
+        if result:
+            return make_response({'message': 'Categories found', 'categories': result}), 200
 
 
 @app.get('/search')
@@ -189,9 +193,8 @@ def cart_post():
 
 @app.delete('/cart')
 def cart_delete():
-    data = request.get_json()
-    username = data['username']
-    sku = data['sku']
+    username = request.args.get('username')
+    sku = request.args.get('sku')
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:

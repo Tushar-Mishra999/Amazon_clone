@@ -17,7 +17,8 @@ class AuthService {
       {required BuildContext context,
       required String name,
       required String email,
-      required String password}) async {
+      required String password,
+      required String userType}) async {
     try {
       User user = User(
           id: '',
@@ -25,7 +26,7 @@ class AuthService {
           email: email,
           password: password,
           address: '',
-          type: '',
+          type: userType,
           token: '',
           cart: []
           );

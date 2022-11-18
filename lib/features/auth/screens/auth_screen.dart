@@ -2,12 +2,15 @@ import 'package:amazon_clone/common/widgets/custom_button.dart';
 import 'package:amazon_clone/common/widgets/custom_textfield.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/features/auth/services/auth_service.dart';
+import 'package:amazon_clone/models/user.dart';
 import 'package:flutter/material.dart';
 
 enum Auth {
   signin,
   signup,
 }
+
+enum UserType { user, seller }
 
 class AuthScreen extends StatefulWidget {
   static const String routeName = '/auth-screen';
@@ -19,6 +22,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   Auth _auth = Auth.signup;
+  UserType _userType = UserType.user;
   final _signUpFormKey = GlobalKey<FormState>();
   final _signInFormKey = GlobalKey<FormState>();
   final AuthService authService = AuthService();
@@ -40,6 +44,7 @@ class _AuthScreenState extends State<AuthScreen> {
       email: _emailController.text,
       password: _passwordController.text,
       name: _nameController.text,
+      userType: _userType==UserType.user?"user":"seller",
     );
   }
 
@@ -48,6 +53,7 @@ class _AuthScreenState extends State<AuthScreen> {
       context: context,
       email: _emailController.text,
       password: _passwordController.text,
+
     );
   }
 
@@ -112,11 +118,54 @@ class _AuthScreenState extends State<AuthScreen> {
                           hintText: 'Password',
                         ),
                         const SizedBox(height: 10),
+                        ListTile(
+                          tileColor: _userType == UserType.user
+                              ? GlobalVariables.backgroundColor
+                              : GlobalVariables.greyBackgroundCOlor,
+                          title: const Text(
+                            'User',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          leading: Radio(
+                            activeColor: GlobalVariables.secondaryColor,
+                            value: UserType.user,
+                            groupValue: _userType,
+                            onChanged: (UserType? val) {
+                              setState(() {
+                                _userType = val!;
+                              });
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          tileColor: _userType == UserType.seller
+                              ? GlobalVariables.backgroundColor
+                              : GlobalVariables.greyBackgroundCOlor,
+                          title: const Text(
+                            'Seller',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          leading: Radio(
+                            activeColor: GlobalVariables.secondaryColor,
+                            value: UserType.seller,
+                            groupValue: _userType,
+                            onChanged: (UserType? val) {
+                              setState(() {
+                                _userType = val!;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
                         CustomButton(
                           text: 'Sign Up',
                           onTap: () {
                             if (_signUpFormKey.currentState!.validate()) {
-                             signUpUser();
+                              signUpUser();
                             }
                           },
                         )

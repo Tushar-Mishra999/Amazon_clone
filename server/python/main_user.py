@@ -267,7 +267,7 @@ def order_get():
         cur.execute('select * from orders where order_id = %s',
                     (request.args.get('order_id'),))
         result = cur.fetchall()
-        cur.execute('select * from products_in_order where order_id = %s',
+        cur.execute('select * from products where sku in (select sku products_in_order where order_id = %s)',
                     (request.args.get('order_id'),))
         result1 = cur.fetchall()
         cur.close()
@@ -297,6 +297,23 @@ def review_post():
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'Added to reviews'}), 200
+
+@app.get('/featured')
+def dotd_get():
+    try:
+        app.mysql.connection.commit()
+    except OperationalError as SQLdbError:
+        if "Lost connection" not in str(SQLdbError):
+            return SQLdbError.__dict__
+        app.mysql.connection = MySQL(app)
+    cur = app.mysql.connection.cursor(curdict.DictCursor)
+    cur.execute('select * from products where sku in (select sku from products_in_order group by sku order by count(sku) desc limit 1)')
+    result = cur.fetchall()
+    cur.close()
+    if result:
+        return make_response({'message': 'DOTD found', 'dotd': result}), 200
+    else:
+        return make_response({'message': 'DOTD not found'}), 404
 
 
 @app.get('/routes')

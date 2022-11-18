@@ -102,8 +102,8 @@ def category():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('category'):
-        cur.execute('select * from products where category = %s',
-                    (request.args.get('category'),))
+        cur.execute('select * from products where category in (select category_id from categories where category_name = %s)',
+                    (str(request.args.get('category')),))
         result = cur.fetchall()
         cur.close()
         if result:

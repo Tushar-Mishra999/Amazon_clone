@@ -8,7 +8,6 @@ import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:provider/provider.dart';
 
 import '../../../common/widgets/loader.dart';
 
@@ -29,18 +28,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ProductDetailsServices();
   double avgRating = 0;
   double myRating = 0;
-   Product product = Product(
-        name: '',
-        description: '',
-        quantity: 0,
-        images: [],
-        category: '',
-        price: 0,
-        keywords: '',
-        sellerId: '',
-        id: '');
+  Product product = Product(
+      name: '',
+      description: '',
+      quantity: 0,
+      images: [],
+      category: '',
+      price: 0,
+      keywords: '',
+      sellerId: '',
+      rating: 0,
+      review: 0,
+      id: '');
   fetchAllCategories() async {
-    product = await productDetailsServices.fetchProduct(context,widget.product.id);
+    product =
+        await productDetailsServices.fetchProduct(context, widget.product.id);
+    avgRating = product.rating;
+    myRating = product.review;
     setState(() {});
   }
 
@@ -148,141 +152,143 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ),
       ),
-      body: product==null?const Loader():SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: product == null
+          ? const Loader()
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    product!.id,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          product.id,
+                        ),
+                        Stars(
+                          rating: avgRating,
+                        ),
+                      ],
+                    ),
                   ),
-                  // Stars(
-                  //   rating: avgRating,
-                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 10,
+                    ),
+                    child: Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  CarouselSlider(
+                    items: product.images.map(
+                      (i) {
+                        return Builder(
+                          builder: (BuildContext context) => Image.network(
+                            i,
+                            fit: BoxFit.contain,
+                            height: 200,
+                          ),
+                        );
+                      },
+                    ).toList(),
+                    options: CarouselOptions(
+                      viewportFraction: 1,
+                      height: 300,
+                    ),
+                  ),
+                  Container(
+                    color: Colors.black12,
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Deal Price: ',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '\$${product.price}',
+                            style: const TextStyle(
+                              fontSize: 22,
+                              color: Colors.red,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(product.description),
+                  ),
+                  Container(
+                    color: Colors.black12,
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: CustomButton(
+                      text: 'Buy Now',
+                      onTap: () {},
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: CustomButton(
+                      text: 'Add to Cart',
+                      onTap: addToCart,
+                      color: const Color.fromRGBO(254, 216, 19, 1),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    color: Colors.black12,
+                    height: 5,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      'Rate The Product',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  RatingBar.builder(
+                    initialRating: myRating,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 4),
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: GlobalVariables.secondaryColor,
+                    ),
+                    onRatingUpdate: (review) {
+                      productDetailsServices.rateProduct(
+                        context: context,
+                        product: widget.product,
+                        review: review,
+                      );
+                    },
+                  )
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 10,
-              ),
-              child: Text(
-                product!.name,
-                style: const TextStyle(
-                  fontSize: 15,
-                ),
-              ),
-            ),
-            CarouselSlider(
-              items: product?.images.map(
-                (i) {
-                  return Builder(
-                    builder: (BuildContext context) => Image.network(
-                      i,
-                      fit: BoxFit.contain,
-                      height: 200,
-                    ),
-                  );
-                },
-              ).toList(),
-              options: CarouselOptions(
-                viewportFraction: 1,
-                height: 300,
-              ),
-            ),
-            Container(
-              color: Colors.black12,
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: RichText(
-                text: TextSpan(
-                  text: 'Deal Price: ',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: '\$${product!.price}',
-                      style: const TextStyle(
-                        fontSize: 22,
-                        color: Colors.red,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(product!.description),
-            ),
-            Container(
-              color: Colors.black12,
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: CustomButton(
-                text: 'Buy Now',
-                onTap: () {},
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: CustomButton(
-                text: 'Add to Cart',
-                onTap: addToCart,
-                color: const Color.fromRGBO(254, 216, 19, 1),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              color: Colors.black12,
-              height: 5,
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(
-                'Rate The Product',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            // RatingBar.builder(
-            //   initialRating: myRating,
-            //   minRating: 1,
-            //   direction: Axis.horizontal,
-            //   allowHalfRating: true,
-            //   itemCount: 5,
-            //   itemPadding: const EdgeInsets.symmetric(horizontal: 4),
-            //   itemBuilder: (context, _) => const Icon(
-            //     Icons.star,
-            //     color: GlobalVariables.secondaryColor,
-            //   ),
-            //   onRatingUpdate: (rating) {
-            //     productDetailsServices.rateProduct(
-            //       context: context,
-            //       product: widget.product,
-            //       rating: rating,
-            //     );
-            //   },
-            // )
-          ],
-        ),
-      ),
     );
   }
 }

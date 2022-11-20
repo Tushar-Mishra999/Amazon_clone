@@ -52,6 +52,8 @@ class ProductDetailsServices {
         price: 0,
         keywords: '',
         sellerId: '',
+        rating: 0,
+        review: 0,
         id: '');
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -73,20 +75,21 @@ class ProductDetailsServices {
   void rateProduct({
     required BuildContext context,
     required Product product,
-    required double rating,
+    required double review,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
       http.Response res = await http.post(
-        Uri.parse('$uri/api/rate-product'),
+        Uri.parse('$userUri/review'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,
         },
         body: jsonEncode({
-          'id': product.id,
-          'rating': rating,
+          'sku': product.id,
+          'review': review,
+          'username':userProvider.user.email
         }),
       );
 

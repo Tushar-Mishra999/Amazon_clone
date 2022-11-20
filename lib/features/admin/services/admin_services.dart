@@ -52,6 +52,8 @@ class AdminServices {
         keywords: keywords,
         sellerId: sellerId,
         id: id,
+        rating: 0,
+        review: 0
       );
 
       http.Response res = await http.post(

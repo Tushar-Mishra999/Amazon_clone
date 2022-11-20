@@ -10,7 +10,9 @@ class Product {
   final double price;
   final String id;
   final String keywords;
-  final List<Rating>? rating;
+  final double rating;
+  final double review;
+  // final List<Rating>? rating;
   final String sellerId;
   Product(
       {required this.name,
@@ -20,7 +22,9 @@ class Product {
       this.category,
       required this.price,
       required this.id,
-      this.rating,
+      required this.rating,
+      required this.review,
+      // this.rating,
       required this.keywords,
       required this.sellerId});
 
@@ -32,9 +36,11 @@ class Product {
       'images': images,
       'category': category,
       'reg_price': price,
-      'seller_id':sellerId,
-      'keywords':keywords,
+      'seller_id': sellerId,
+      'keywords': keywords,
       'sku': id,
+      'rating':rating,
+      'review':review
       //'rating': rating,
     };
   }
@@ -52,13 +58,15 @@ class Product {
       id: map['SKU'],
       keywords: map['keywords'],
       sellerId: map['seller_id'],
-      rating: map['ratings'] != null
-          ? List<Rating>.from(
-              map['ratings']?.map(
-                (x) => Rating.fromMap(x),
-              ),
-            )
-          : null,
+      rating:map['rating'] ?? 0,
+      review: map['review']??0
+      // rating: map['ratings'] != null
+      //     ? List<Rating>.from(
+      //         map['ratings']?.map(
+      //           (x) => Rating.fromMap(x),
+      //         ),
+      //       )
+      //     : null,
     );
   }
 

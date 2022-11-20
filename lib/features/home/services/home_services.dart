@@ -79,7 +79,9 @@ class HomeServices {
         price: 0,
         keywords: '',
         sellerId: '',
-        id: '');
+        id: '',
+        rating: 0,
+        review: 0);
 
     try {
       http.Response res =

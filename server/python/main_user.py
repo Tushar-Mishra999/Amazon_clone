@@ -295,7 +295,7 @@ def review_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("INSERT INTO reviews (username, sku, rating) VALUES(%s, %s, %s)" % (
+    cur.execute('INSERT INTO reviews (username, sku, rating) VALUES("%s", "%s", "%s")' % (
         str(username), str(sku), str(review)))
     app.mysql.connection.commit()
     cur.close()

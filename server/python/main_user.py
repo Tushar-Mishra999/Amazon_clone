@@ -296,7 +296,7 @@ def review_post():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     cur.execute("INSERT INTO reviews (username, sku, rating) VALUES(%s, %s, %s)" % (
-        username, sku, review))
+        str(username), str(sku), str(review)))
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'Added to reviews'}), 200

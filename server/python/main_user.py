@@ -164,6 +164,7 @@ def cart_get():
         result = cur.fetchall()
         cur.close()
         if result:
+            result['Images']=eval(result['Images'][:1])
             return make_response({'message': 'Cart found', 'cart': result}), 200
         else:
             return make_response({'message': 'Cart not found'}), 404

@@ -159,7 +159,7 @@ def cart_get():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('username'):
-        cur.execute('select * from cart join products using(sku) where username = %s',
+        cur.execute('select * from cart join products using(sku) where username = "%s"',
                     (request.args.get('username'),))
         result = cur.fetchall()
         cur.close()
@@ -184,7 +184,7 @@ def cart_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("INSERT INTO cart VALUES(%s, %s, %s)" %
+    cur.execute('INSERT INTO cart VALUES("%s", "%s", "%s")' %
                 (username, sku, quantity))
     app.mysql.connection.commit()
     cur.close()
@@ -202,11 +202,31 @@ def cart_delete():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("DELETE FROM cart WHERE username = %s AND sku = %s" %
+    cur.execute('DELETE FROM cart WHERE username = "%s" AND sku = "%s"' %
                 (username, sku))
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'Deleted from cart'}), 200
+
+
+@app.put('/cart')
+def cart_put():
+    data = request.get_json()
+    username = data['username']
+    sku = data['sku']
+    quantity = data['quantity']
+    try:
+        app.mysql.connection.commit()
+    except OperationalError as SQLdbError:
+        if "Lost connection" not in str(SQLdbError):
+            return SQLdbError.__dict__
+        app.mysql.connection = MySQL(app)
+    cur = app.mysql.connection.cursor(curdict.DictCursor)
+    cur.execute('UPDATE cart SET quantity = "%s" WHERE username = "%s" AND sku = "%s"' %
+                (quantity, username, sku))
+    app.mysql.connection.commit()
+    cur.close()
+    return make_response({'message': 'Updated cart'}), 200
 
 
 @app.get('/orders')
@@ -219,7 +239,7 @@ def orders_get():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('username'):
-        cur.execute('select * from orders where username = %s',
+        cur.execute('select * from orders where username = "%s"',
                     (request.args.get('username'),))
         result = cur.fetchall()
         cur.close()
@@ -300,6 +320,7 @@ def review_post():
     app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'Added to reviews'}), 200
+
 
 @app.get('/featured')
 def dotd_get():

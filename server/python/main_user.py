@@ -159,6 +159,15 @@ def cart_get():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('username'):
+        if request.args.get('count'):
+            cur.execute('select count(*) as count from cart where username = %s',
+                        (request.args.get('username'),))
+            result = cur.fetchone()
+            cur.close()
+            if result:
+                return make_response({'message': 'Cart count found', 'count': result['count']}), 200
+            else:
+                return make_response({'message': 'Cart count not found'}), 404
         cur.execute('select * from cart join products using(sku) where username = %s',
                     (request.args.get('username'),))
         result = cur.fetchall()
@@ -224,7 +233,7 @@ def cart_put():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute('UPDATE cart SET quantity = "%s" WHERE username = "%s" AND sku = "%s"' %
+    cur.execute('UPDATE cart SET qty = "%s" WHERE username = "%s" AND sku = "%s"' %
                 (quantity, username, sku))
     app.mysql.connection.commit()
     cur.close()

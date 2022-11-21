@@ -50,7 +50,7 @@ class SearchedProduct extends StatelessWidget {
                     width: 235,
                     padding: const EdgeInsets.only(left: 10, top: 5),
                     child: Stars(
-                      rating: avgRating!,
+                      rating: avgRating,
                     ),
                   ),
                   Container(

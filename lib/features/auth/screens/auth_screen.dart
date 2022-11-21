@@ -29,6 +29,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _addressController=TextEditingController();
 
   @override
   void dispose() {
@@ -36,6 +37,7 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
+    _addressController.dispose();
   }
 
   void signUpUser() {
@@ -45,6 +47,7 @@ class _AuthScreenState extends State<AuthScreen> {
       password: _passwordController.text,
       name: _nameController.text,
       userType: _userType==UserType.user?"user":"seller",
+      address: _addressController.text,
     );
   }
 
@@ -53,7 +56,6 @@ class _AuthScreenState extends State<AuthScreen> {
       context: context,
       email: _emailController.text,
       password: _passwordController.text,
-
     );
   }
 
@@ -111,6 +113,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         CustomTextField(
                           controller: _emailController,
                           hintText: 'Email',
+                        ),
+                        const SizedBox(height: 10),
+                         CustomTextField(
+                          controller: _addressController,
+                          hintText: 'Address',
+                          maxLines: 2,
                         ),
                         const SizedBox(height: 10),
                         CustomTextField(

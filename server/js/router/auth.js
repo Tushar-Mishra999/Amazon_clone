@@ -15,6 +15,7 @@ authRouter.post("/api/signup", async (req, res) => {
             name,
             email,
             password,
+            address,
             type
         } = req.body;
         const existingUser = await User.findOne({
@@ -31,6 +32,7 @@ authRouter.post("/api/signup", async (req, res) => {
             password: hashedPassword,
             name,
             type,
+            address
         });
 
         user = await user.save();

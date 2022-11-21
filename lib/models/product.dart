@@ -4,10 +4,10 @@ import 'package:amazon_clone/models/rating.dart';
 class Product {
   final String name;
   final String description;
-  final double quantity;
+  int quantity;
   final List<String> images;
   final String? category;
-  final double price;
+  final int price;
   final String id;
   final String keywords;
   final double rating;
@@ -51,15 +51,37 @@ class Product {
     return Product(
       name: map['Title'] ?? '',
       description: map['Description'] ?? '',
-      quantity: map['Inventory']?.toDouble() ?? 0.0,
+      quantity: map['Inventory'] ?? 0,
       images: List<String>.from(map['Images']),
       category: map['category'] ?? '',
-      price: map['Reg_price']?.toDouble() ?? 0.0,
+      price: map['Reg_price'] ?? 0,
       id: map['SKU'],
       keywords: map['keywords'],
       sellerId: map['seller_id'],
       rating:map['rating'] ?? 0,
-      review: map['review']??0
+      review: map['review']?? 0
+      // rating: map['ratings'] != null
+      //     ? List<Rating>.from(
+      //         map['ratings']?.map(
+      //           (x) => Rating.fromMap(x),
+      //         ),
+      //       )
+      //     : null,
+    );
+  }
+   factory Product.fromCartMap(Map<String, dynamic> map) {
+    return Product(
+      name: map['Title'] ?? '',
+      description: map['Description'] ?? '',
+      quantity: map['qty'] ?? 0,
+      images: List<String>.from(map['Images']),
+      category: map['category'] ?? '',
+      price: map['Reg_price'] ?? 0,
+      id: map['sku'],
+      keywords: map['keywords']??"",
+      sellerId: map['seller_id'],
+      rating:map['rating'] ?? 0,
+      review: map['review']?? 0
       // rating: map['ratings'] != null
       //     ? List<Rating>.from(
       //         map['ratings']?.map(
@@ -72,4 +94,7 @@ class Product {
 
   factory Product.fromJson(String source) =>
       Product.fromMap(json.decode(source));
+
+  factory Product.fromCartJson(String source) =>
+      Product.fromCartMap(json.decode(source));
 }

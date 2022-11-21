@@ -1,6 +1,7 @@
 import 'package:amazon_clone/common/widgets/custom_button.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/features/address/screens/address_screen.dart';
+import 'package:amazon_clone/features/cart/services/cart_services.dart';
 import 'package:amazon_clone/features/cart/widgets/cart_product.dart';
 import 'package:amazon_clone/features/cart/widgets/cart_subtotal.dart';
 import 'package:amazon_clone/features/home/widgets/address_box.dart';
@@ -8,6 +9,8 @@ import 'package:amazon_clone/features/search/screens/search_screen.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../common/widgets/loader.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -21,6 +24,7 @@ class _CartScreenState extends State<CartScreen> {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
 
+  CartServices cartServices = CartServices();
   void navigateToAddress(int sum) {
     Navigator.pushNamed(
       context,
@@ -29,18 +33,33 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
+  bool isLoaded = false;
+
+  fetchCartProducts() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    user.cart = await cartServices.fetchCartProducts(context: context);
+    isLoaded = true;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      fetchCartProducts();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<UserProvider>().user;
+    final user = Provider.of<UserProvider>(context, listen: false).user;
     int sum = 0;
-    user.cart
-        .map((e) => sum += e['quantity'] * e['product']['price'] as int)
-        .toList();
+    user.cart.map((e) => sum += e.quantity * (e.price));
 
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
-        child: AppBar(
+        child:AppBar(
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: GlobalVariables.appBarGradient,
@@ -110,7 +129,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body:  !isLoaded?const Loader():SingleChildScrollView(
         child: Column(
           children: [
             const AddressBox(),

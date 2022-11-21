@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:amazon_clone/models/product.dart';
+
 class User {
   final String id;
   final String name;
@@ -8,7 +10,7 @@ class User {
   final String address;
   final String type;
   final String token;
-  final List<dynamic> cart;
+  List<Product> cart;
 
   User({
     required this.id,
@@ -30,7 +32,7 @@ class User {
       'address': address,
       'type': type,
       'token': token,
-    //  'cart': cart,
+      'cart': cart,
     };
   }
 
@@ -43,7 +45,7 @@ class User {
       address: map['address'] ?? '',
       type: map['type'] ?? '',
       token: map['token'] ?? '',
-      cart: List<Map<String, dynamic>>.from(
+      cart: List<Product>.from(
         map['cart']?.map(
           (x) => Map<String, dynamic>.from(x),
         ),
@@ -63,7 +65,7 @@ class User {
     String? address,
     String? type,
     String? token,
-    List<dynamic>? cart,
+    List<Product>? cart,
   }) {
     return User(
       id: id ?? this.id,

@@ -18,14 +18,15 @@ class AuthService {
       required String name,
       required String email,
       required String password,
-      required String userType}) async {
+      required String userType,
+      required String address}) async {
     try {
       User user = User(
           id: '',
           name: name,
           email: email,
           password: password,
-          address: '',
+          address: address,
           type: userType,
           token: '',
           cart: []

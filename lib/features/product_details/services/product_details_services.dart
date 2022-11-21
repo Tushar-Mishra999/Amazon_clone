@@ -13,18 +13,21 @@ class ProductDetailsServices {
   void addToCart({
     required BuildContext context,
     required Product product,
+    required int quantity,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
       http.Response res = await http.post(
-        Uri.parse('$uri/api/add-to-cart'),
+        Uri.parse('$userUri/cart'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,
         },
         body: jsonEncode({
-          'id': product.id,
+          'sku': product.id,
+          'quantity':quantity,
+          'username':userProvider.user.email
         }),
       );
 

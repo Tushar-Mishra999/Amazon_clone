@@ -28,6 +28,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ProductDetailsServices();
   double avgRating = 0;
   double myRating = 0;
+  bool isLoaded = false;
   Product product = Product(
       name: '',
       description: '',
@@ -45,6 +46,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         await productDetailsServices.fetchProduct(context, widget.product.id);
     avgRating = product.rating;
     myRating = product.review;
+    isLoaded = true;
     setState(() {});
   }
 
@@ -74,6 +76,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     productDetailsServices.addToCart(
       context: context,
       product: widget.product,
+      quantity:1,
     );
   }
 
@@ -152,7 +155,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ),
       ),
-      body: product == null
+      body: !isLoaded
           ? const Loader()
           : SingleChildScrollView(
               child: Column(
@@ -280,10 +283,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     onRatingUpdate: (review) {
                       productDetailsServices.rateProduct(
-                        context: context,
-                        product: widget.product,
-                        review: review,
-                      );
+                          context: context,
+                          product: widget.product,
+                          review: review);
                     },
                   )
                 ],

@@ -159,7 +159,7 @@ def cart_get():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('username'):
-        cur.execute('select * from cart join products using(sku) where username = "%s"',
+        cur.execute('select * from cart join products using(sku) where username = %s',
                     (request.args.get('username'),))
         result = cur.fetchall()
         cur.close()

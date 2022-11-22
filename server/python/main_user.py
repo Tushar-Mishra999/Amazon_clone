@@ -268,7 +268,6 @@ def order_post():
     date = datetime.datetime.now()
     username = data['username']
     products = data['products']
-    quantity = data['quantity']
     order_id = uuid.uuid4()
     try:
         app.mysql.connection.commit()
@@ -277,12 +276,14 @@ def order_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute("INSERT INTO orders VALUES(%s, %s, %s, %s)" %
-                (order_id, username, quantity, date))
+    cur.execute('INSERT INTO orders VALUES(%s, "%s", %s)' %
+                (order_id, username, date))
     app.mysql.connection.commit()
     for i in products:
         cur.execute("INSERT INTO products_in_order VALUES(%s, %s)" %
-                    (order_id, i))
+                    (order_id, i, products[i]))
+        cur.execute(
+            "UPDATE products SET inventory = inventory - %s WHERE sku = %s", (i,products[i]))
         app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'Added to orders'}), 200

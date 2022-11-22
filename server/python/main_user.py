@@ -281,9 +281,9 @@ def order_post():
     app.mysql.connection.commit()
     for i in products:
         cur.execute("INSERT INTO products_in_order VALUES(%s, %s)" %
-                    (order_id, i, products[i]))
+                    (order_id, i['sku'], i['quantity']))
         cur.execute(
-            "UPDATE products SET inventory = inventory - %s WHERE sku = %s", (i,products[i]))
+            "UPDATE products SET inventory = inventory - %s WHERE sku = %s", (i['sku'], i['quantity']))
         app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'Added to orders'}), 200

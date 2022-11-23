@@ -133,11 +133,11 @@ def search():
         keywords = request.args.get('query').split()
         query = 'select * from products where sku in (select sku from keywords where '
         for keyword in keywords:
-            query += 'name like "%s" or '
-        query = query[:-3]
-        cur.execute(query, tuple(['%'+keyword+'%' for keyword in keywords]))
+            query += f'keyword like "%{str(keyword)}%" or '
+        query = query[:-4]+')'
+        cur.execute(query)
         result = cur.fetchall()
-        cur.execute('select * from products where name like %s',
+        cur.execute('select * from products where title like %s',
                     ('%'+request.args.get('query')+'%',))
         result += cur.fetchall()
         cur.close()

@@ -131,17 +131,18 @@ def search():
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('query'):
         keywords = request.args.get('query').split()
-        query = 'select * from products where sku in (select sku from keywords where '
+        query = 'select distinct sku, products.* from products where sku in (select sku from keywords where '
         for keyword in keywords:
             query += f'keyword like "%{str(keyword)}%" or '
         query = query[:-4]+')'
+        query += ' or title like "%'+request.args.get('query')+'%"'
         cur.execute(query)
         result = cur.fetchall()
-        cur.execute('select * from products where title like %s',
-                    ('%'+request.args.get('query')+'%',))
-        result += cur.fetchall()
         cur.close()
         if result:
+            for i in result:
+                i['Images'] = eval(i['Images'])
+                del i['sku']
             return make_response({'message': 'Products found', 'products': result}), 200
         else:
             return make_response({'message': 'Products not found'}), 404

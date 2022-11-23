@@ -146,7 +146,7 @@ def search():
                 if rating['rating']:
                     i['rating'] = rating['rating']
                 else:
-                    i['rating'] = 0
+                    i['rating'] = 0.0
                 i['Images'] = eval(i['Images'])
                 del i['sku']
             cur.close()

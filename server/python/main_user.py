@@ -285,7 +285,7 @@ def order_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute('INSERT INTO orders(order_no,username,date,shipping_address) VALUES(%s, "%s", "%s", "%s")' %
+    cur.execute('INSERT INTO orders(order_no,username,date,shipping_address) VALUES("%s", "%s", "%s", "%s")' %
                 (order_id, username, date, address))
     app.mysql.connection.commit()
     for i in products:

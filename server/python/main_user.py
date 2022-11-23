@@ -131,18 +131,25 @@ def search():
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('query'):
         keywords = request.args.get('query').split()
-        query = 'select distinct sku, products.* from products where sku in (select sku from keywords where '
+        query = 'select distinct products.sku, products.* from products where products.sku in (select sku from keywords where '
         for keyword in keywords:
             query += f'keyword like "%{str(keyword)}%" or '
         query = query[:-4]+')'
         query += ' or title like "%'+request.args.get('query')+'%"'
         cur.execute(query)
         result = cur.fetchall()
-        cur.close()
         if result:
             for i in result:
+                cur.execute(
+                    'select avg(rating) as rating from reviews where sku = %s', (i['sku'],))
+                rating = cur.fetchone()
+                if rating['rating']:
+                    i['rating'] = rating['rating']
+                else:
+                    i['rating'] = 0
                 i['Images'] = eval(i['Images'])
                 del i['sku']
+            cur.close()
             return make_response({'message': 'Products found', 'products': result}), 200
         else:
             return make_response({'message': 'Products not found'}), 404
@@ -266,7 +273,7 @@ def orders_get():
 @app.post('/order')
 def order_post():
     data = request.get_json()
-    date = datetime.datetime.now()
+    date = datetime.now()
     username = data['username']
     products = data['products']
     order_id = uuid.uuid4()

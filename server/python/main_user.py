@@ -277,6 +277,7 @@ def order_post():
     username = data['username']
     products = data['products']
     order_id = uuid.uuid4()
+    address = data['address']
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:
@@ -284,8 +285,8 @@ def order_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute('INSERT INTO orders VALUES(%s, "%s", %s)' %
-                (order_id, username, date))
+    cur.execute('INSERT INTO orders(order_no,username,date,shipping_address) VALUES(%s, "%s", "%s", "%s")' %
+                (order_id, username, date, address))
     app.mysql.connection.commit()
     for i in products:
         cur.execute("INSERT INTO products_in_order VALUES(%s, %s)" %
@@ -310,7 +311,7 @@ def order_get():
         cur.execute('select * from orders where order_id = %s',
                     (request.args.get('order_id'),))
         result = cur.fetchall()
-        cur.execute('select * from products where sku in (select sku products_in_order where order_id = %s)',
+        cur.execute('select * from products join products_in_order using (sku) where order_id = %s)',
                     (request.args.get('order_id'),))
         result1 = cur.fetchall()
         cur.close()

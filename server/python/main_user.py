@@ -352,7 +352,7 @@ def featured_get():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute('select * from products where sku in (select sku from products_in_order group by sku order by count(sku) desc limit 1)')
+    cur.execute('select * from products where sku in (select sku from products_in_order group by sku order by count(sku) desc) limit 1')
     result = cur.fetchall()
     cur.close()
     if result:

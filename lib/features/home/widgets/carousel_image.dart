@@ -7,14 +7,21 @@ class CarouselImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return CarouselSlider(
       items: GlobalVariables.carouselImages.map(
         (i) {
           return Builder(
-            builder: (BuildContext context) => Image.network(
-              i,
-              fit: BoxFit.cover,
-              height: 200,
+            builder: (BuildContext context) => Container(
+              width: size.width * 0.8,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: Image.network(
+                i,
+                fit: BoxFit.cover,
+                height: 200,
+              ),
             ),
           );
         },

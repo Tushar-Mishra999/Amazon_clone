@@ -1,7 +1,8 @@
+import 'package:amazon_clone/common/widgets/custom_button.dart';
 import 'package:amazon_clone/common/widgets/custom_textfield.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/constants/utils.dart';
-import 'package:amazon_clone/features/address/services/address_services.dart';
+import 'package:amazon_clone/features/buy/services/buy_services.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:pay/pay.dart';
@@ -9,19 +10,19 @@ import 'package:provider/provider.dart';
 
 
 
-class AddressScreen extends StatefulWidget {
+class BuyScreen extends StatefulWidget {
   static const String routeName = '/address';
   final String totalAmount;
-  const AddressScreen({
+  const BuyScreen({
     Key? key,
     required this.totalAmount,
   }) : super(key: key);
 
   @override
-  State<AddressScreen> createState() => _AddressScreenState();
+  State<BuyScreen> createState() => _BuyScreenState();
 }
 
-class _AddressScreenState extends State<AddressScreen> {
+class _BuyScreenState extends State<BuyScreen> {
   final TextEditingController flatBuildingController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
   final TextEditingController pincodeController = TextEditingController();
@@ -30,7 +31,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
   String addressToBeUsed = "";
   List<PaymentItem> paymentItems = [];
-  final AddressServices addressServices = AddressServices();
+  final BuyServices addressServices = BuyServices();
 
   @override
   void initState() {
@@ -53,33 +54,29 @@ class _AddressScreenState extends State<AddressScreen> {
     cityController.dispose();
   }
 
-  void onApplePayResult(res) {
-    if (Provider.of<UserProvider>(context, listen: false)
-        .user
-        .address
-        .isEmpty) {
-      addressServices.saveUserAddress(
-          context: context, address: addressToBeUsed);
-    }
-    addressServices.placeOrder(
-      context: context,
-      address: addressToBeUsed,
-      totalSum: double.parse(widget.totalAmount),
-    );
-  }
+  // void onApplePayResult(res) {
+  //   // if (Provider.of<UserProvider>(context, listen: false)
+  //   //     .user
+  //   //     .address
+  //   //     .isEmpty) {
+  //   //   addressServices.saveUserAddress(
+  //   //       context: context, address: addressToBeUsed);
+  //   // }
+  //   addressServices.placeOrder(
+  //     context: context,
+  //   );
+  // }
 
-  void onGooglePayResult(res) {
-    if (Provider.of<UserProvider>(context, listen: false)
-        .user
-        .address
-        .isEmpty) {
-      addressServices.saveUserAddress(
-          context: context, address: addressToBeUsed);
-    }
+  void onGooglePayResult() {
+    // if (Provider.of<UserProvider>(context, listen: false)
+    //     .user
+    //     .address
+    //     .isEmpty) {
+    //   addressServices.saveUserAddress(
+    //       context: context, address: addressToBeUsed);
+    // }
     addressServices.placeOrder(
       context: context,
-      address: addressToBeUsed,
-      totalSum: double.parse(widget.totalAmount),
     );
   }
 
@@ -182,31 +179,7 @@ class _AddressScreenState extends State<AddressScreen> {
                   ],
                 ),
               ),
-              ApplePayButton(
-                width: double.infinity,
-                style: ApplePayButtonStyle.whiteOutline,
-                type: ApplePayButtonType.buy,
-                paymentConfigurationAsset: 'applepay.json',
-                onPaymentResult: onApplePayResult,
-                paymentItems: paymentItems,
-                margin: const EdgeInsets.only(top: 15),
-                height: 50,
-                onPressed: () => payPressed(address),
-              ),
-              const SizedBox(height: 10),
-              GooglePayButton(
-                onPressed: () => payPressed(address),
-                paymentConfigurationAsset: 'gpay.json',
-                onPaymentResult: onGooglePayResult,
-                paymentItems: paymentItems,
-                height: 50,
-                //style: GooglePayButtonStyle.black,
-                type: GooglePayButtonType.buy,
-                margin: const EdgeInsets.only(top: 15),
-                loadingIndicator: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
+              CustomButton(text: "Buy", onTap: onGooglePayResult)
             ],
           ),
         ),

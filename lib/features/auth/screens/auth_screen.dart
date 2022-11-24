@@ -21,7 +21,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  Auth _auth = Auth.signup;
+  Auth _auth = Auth.signin;
   UserType _userType = UserType.user;
   final _signUpFormKey = GlobalKey<FormState>();
   final _signInFormKey = GlobalKey<FormState>();

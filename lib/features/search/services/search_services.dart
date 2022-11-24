@@ -17,7 +17,7 @@ class SearchServices {
     List<Product> productList = [];
     try {
       http.Response res = await http.get(
-        Uri.parse('$uri/api/products/search/$searchQuery'),
+        Uri.parse('$userUri/search?query=$searchQuery'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,
@@ -32,7 +32,7 @@ class SearchServices {
             productList.add(
               Product.fromJson(
                 jsonEncode(
-                  jsonDecode(res.body)[i],
+                  jsonDecode(res.body)['products'][i],
                 ),
               ),
             );

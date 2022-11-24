@@ -356,6 +356,8 @@ def featured_get():
     result = cur.fetchall()
     cur.close()
     if result:
+        for i in result:
+            i['Images'] = eval(i['Images'])
         return make_response({'message': 'feauted products found', 'featured': result}), 200
     else:
         return make_response({'message': 'feauted products not found'}), 404

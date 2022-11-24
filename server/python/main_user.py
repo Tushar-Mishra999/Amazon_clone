@@ -258,11 +258,13 @@ def orders_get():
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     if request.args.get('username'):
-        cur.execute('select * from orders where username = "%s"',
+        cur.execute('select * from products join products_in_order using(sku) join orders using(order_no) where username = %s',
                     (request.args.get('username'),))
         result = cur.fetchall()
         cur.close()
         if result:
+            for i in result:
+                i['Images'] = eval(i['Images'])[:1]
             return make_response({'message': 'Orders found', 'orders': result}), 200
         else:
             return make_response({'message': 'Orders not found'}), 404
@@ -293,6 +295,7 @@ def order_post():
                     (order_id, i['sku'], i['quantity']))
         cur.execute(
             "UPDATE products SET inventory = inventory - %s WHERE sku = %s", (i['sku'], i['quantity']))
+        cur.execute('DELETE FROM cart WHERE username = "%s" AND sku = "%s"' %(username, i['sku']))
         app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'Added to orders'}), 200

@@ -21,9 +21,9 @@ limiter = Limiter(
 )
 
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['MYSQL_HOST'] = 'attendance.cbcvudzl6rdd.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_HOST'] = 'projects.cbcvudzl6rdd.us-east-1.rds.amazonaws.com'
 app.config['MYSQL_USER'] = 'admin'
-app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_PASSWORD'] = 'DarkShadow2806'
 app.config['MYSQL_DB'] = 'ecommerce'
 app.config['JSON_SORT_KEYS'] = False
 app.config['SECRET_KEY'] = '0898a671f37849d79ed8126dd469dcd1'
@@ -344,7 +344,7 @@ def review_post():
 
 
 @app.get('/featured')
-def dotd_get():
+def featured_get():
     try:
         app.mysql.connection.commit()
     except OperationalError as SQLdbError:
@@ -356,9 +356,9 @@ def dotd_get():
     result = cur.fetchall()
     cur.close()
     if result:
-        return make_response({'message': 'DOTD found', 'dotd': result}), 200
+        return make_response({'message': 'feauted products found', 'featured': result}), 200
     else:
-        return make_response({'message': 'DOTD not found'}), 404
+        return make_response({'message': 'feauted products not found'}), 404
 
 
 @app.get('/routes')

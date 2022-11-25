@@ -85,7 +85,7 @@ def order_put():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute('UPDATE orders SET status = %s WHERE order_id = %s',
+    cur.execute('UPDATE orders SET status = %s WHERE order_no = %s',
                 (status, order_id))
     app.mysql.connection.commit()
     cur.close()

@@ -56,7 +56,7 @@ class Product {
       category: map['category'] ?? '',
       price: map['Reg_price'] ?? 0,
       id: map['SKU'],
-      keywords: map['keywords'],
+      keywords: map['keywords']??'',
       sellerId: map['seller_id'],
       rating:map['rating'] ?? 0,
       review: map['review']?? 0

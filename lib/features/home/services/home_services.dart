@@ -85,7 +85,7 @@ class HomeServices {
 
     try {
       http.Response res =
-          await http.get(Uri.parse('$uri/api/deal-of-day'), headers: {
+          await http.get(Uri.parse('$userUri/featured'), headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'x-auth-token': userProvider.user.token,
       });
@@ -94,7 +94,7 @@ class HomeServices {
         response: res,
         context: context,
         onSuccess: () {
-          product = Product.fromJson(res.body);
+          product = Product.fromMap(json.decode(res.body)['featured'][0]);
         },
       );
     } catch (e) {

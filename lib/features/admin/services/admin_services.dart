@@ -43,18 +43,17 @@ class AdminServices {
       }
 
       Product product = Product(
-        name: name,
-        description: description,
-        quantity: quantity,
-        images: imageUrls,
-        category: category,
-        price: price,
-        keywords: keywords,
-        sellerId: sellerId,
-        id: id,
-        rating: 0,
-        review: 0
-      );
+          name: name,
+          description: description,
+          quantity: quantity,
+          images: imageUrls,
+          category: category,
+          price: price,
+          keywords: keywords,
+          sellerId: sellerId,
+          id: id,
+          rating: 0,
+          review: 0);
 
       http.Response res = await http.post(
         Uri.parse('$kdigitalOceanUri/add_product'),
@@ -164,8 +163,8 @@ class AdminServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     List<Order> orderList = [];
     try {
-      http.Response res =
-          await http.get(Uri.parse('$uri/admin/get-orders'), headers: {
+      http.Response res = await http
+          .get(Uri.parse('$kdigitalOceanUri/orders?username=${userProvider.user.email}'), headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'x-auth-token': userProvider.user.token,
       });
@@ -193,22 +192,21 @@ class AdminServices {
 
   void changeOrderStatus({
     required BuildContext context,
-    required int status,
     required Order order,
     required VoidCallback onSuccess,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
-      http.Response res = await http.post(
-        Uri.parse('$uri/admin/change-order-status'),
+      http.Response res = await http.put(
+        Uri.parse('$kdigitalOceanUri/order'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,
         },
         body: jsonEncode({
-          'id': order.id,
-          'status': status,
+          'order_id': order.sku,
+          'status': order.status + 1,
         }),
       );
 
@@ -228,7 +226,7 @@ class AdminServices {
     int totalEarning = 0;
     try {
       http.Response res =
-          await http.get(Uri.parse('$uri/admin/analytics'), headers: {
+          await http.get(Uri.parse('$kdigitalOceanUri/order'), headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'x-auth-token': userProvider.user.token,
       });

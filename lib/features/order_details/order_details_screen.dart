@@ -5,7 +5,6 @@ import 'package:amazon_clone/features/search/screens/search_screen.dart';
 import 'package:amazon_clone/models/order.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class OrderDetailScreen extends StatefulWidget {
@@ -34,14 +33,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     currentStep = widget.order.status;
   }
 
-  // !!! ONLY FOR ADMIN!!!
   void changeOrderStatus(int status) {
     if (status == 3) {
       return;
     }
     adminServices.changeOrderStatus(
       context: context,
-      status: status + 1,
       order: widget.order,
       onSuccess: () {
         setState(() {
@@ -152,12 +149,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Order Date:      ${DateFormat().format(
-                      DateTime.fromMillisecondsSinceEpoch(
-                          widget.order.orderedAt),
-                    )}'),
-                    Text('Order ID:          ${widget.order.id}'),
-                    Text('Order Total:      \$${widget.order.totalPrice}'),
+                    Text('Order Date: ${widget.order.orderedAt.split("2022")[0]} '),
+                    Text('Order ID: ${widget.order.sku}'),
+                    Text('Order Total: ${widget.order.regPrice}'),
                   ],
                 ),
               ),
@@ -178,11 +172,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    for (int i = 0; i < widget.order.products.length; i++)
                       Row(
                         children: [
                           Image.network(
-                            widget.order.products[i].images[0],
+                            widget.order.images[0],
                             height: 120,
                             width: 120,
                           ),
@@ -192,7 +185,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget.order.products[i].name,
+                                  widget.order.title,
                                   style: const TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.bold,
@@ -201,7 +194,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
-                                  'Qty: ${widget.order.quantity[i]}',
+                                  'Qty: ${widget.order.quantity}',
                                 ),
                               ],
                             ),
@@ -228,7 +221,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Stepper(
                   currentStep: currentStep,
                   controlsBuilder: (context, details) {
-                    if (user.type == 'admin'&&currentStep<3) {
+                    if (user.type == 'seller' && currentStep < 3) {
                       return CustomButton(
                         text: 'Done',
                         onTap: () {

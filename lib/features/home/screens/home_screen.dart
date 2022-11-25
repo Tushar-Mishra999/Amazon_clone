@@ -16,8 +16,8 @@ import '../widgets/discount3.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
-  const HomeScreen({Key? key}) : super(key: key);
-
+  HomeScreen({Key? key}) : super(key: key);
+  bool isMount = true;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -33,6 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchAllCategories();
   }
 
+   @override
+  void dispose() {
+    
+    widget.isMount = false;
+    super.dispose();
+  }
+
   final HomeServices homeServices = HomeServices();
   List<Categories> productCategories = [];
   Map<String, String> mp = {};
@@ -42,11 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
     // for (var x in productCategories) {
     //   mp[x.title] = x.categoryId;
     //}
-    setState(() {});
+    if (widget.isMount) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
@@ -134,8 +144,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SummerSale(),
                     const CreditCard(),
                     const SuperCoins(),
-                    const DealOfDay(),
                     const ElectronicSale(),
+                    const DealOfDay(),
+                    SizedBox(height: size.height * 0.1)
                   ],
                 ),
               )

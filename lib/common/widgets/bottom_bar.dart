@@ -22,7 +22,7 @@ class _BottomBarState extends State<BottomBar> {
   double bottomBarBorderWidth = 5;
 
   List<Widget> pages = [
-    const HomeScreen(),
+    HomeScreen(),
     const AccountScreen(),
     const CartScreen(),
   ];

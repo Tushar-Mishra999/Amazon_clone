@@ -48,7 +48,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 child: SizedBox(
                   height: 140,
                   child: SingleProduct(
-                    image: orderData.products[0].images[0],
+                    image: orderData.images[0],
                   ),
                 ),
               );

@@ -22,14 +22,14 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateQuantity(User user, int quantity,Product product) {
-    for (var element in user.cart) {
-        if(product.id==element.id){
-          element.quantity=quantity;
+  void updateQuantity(User user, int quantity, Product product) {
+      for (var element in user.cart) {
+        if (product.id == element.id) {
+          element.quantity = quantity;
         }
-    }
-    _user = user;
-    notifyListeners();
+      }
+      _user = user;
+      notifyListeners();
   }
 
   void setUserFromModel(User user) {

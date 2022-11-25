@@ -164,7 +164,7 @@ class AdminServices {
     List<Order> orderList = [];
     try {
       http.Response res = await http
-          .get(Uri.parse('$kdigitalOceanUri/orders?username=${userProvider.user.email}'), headers: {
+          .get(Uri.parse('$kdigitalOceanUri/orders?seller_id=${userProvider.user.email}'), headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'x-auth-token': userProvider.user.token,
       });
@@ -173,13 +173,9 @@ class AdminServices {
         response: res,
         context: context,
         onSuccess: () {
-          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+          for (int i = 0; i < jsonDecode(res.body)['data'].length; i++) {
             orderList.add(
-              Order.fromJson(
-                jsonEncode(
-                  jsonDecode(res.body)[i],
-                ),
-              ),
+             Order.fromMap(jsonDecode(res.body)['data'][i])
             );
           }
         },
@@ -193,6 +189,7 @@ class AdminServices {
   void changeOrderStatus({
     required BuildContext context,
     required Order order,
+    required int status,
     required VoidCallback onSuccess,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -205,8 +202,8 @@ class AdminServices {
           'x-auth-token': userProvider.user.token,
         },
         body: jsonEncode({
-          'order_id': order.sku,
-          'status': order.status + 1,
+          'order_id': order.orderNo,
+          'status': status,
         }),
       );
 

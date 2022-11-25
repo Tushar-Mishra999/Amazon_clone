@@ -47,7 +47,12 @@ class _PostsScreenState extends State<PostsScreen> {
   Widget build(BuildContext context) {
     return 
     products == null
-        ? const Loader()
+        ? const Loader():products!.isEmpty
+              ? const Center(
+                  child: Text(
+                  "No products found",
+                  style: TextStyle(fontSize: 20),
+                ))
         : 
         Scaffold(
             body: GridView.builder(

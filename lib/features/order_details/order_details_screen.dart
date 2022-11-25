@@ -40,6 +40,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     adminServices.changeOrderStatus(
       context: context,
       order: widget.order,
+      status:currentStep+1,
       onSuccess: () {
         setState(() {
           currentStep += 1;

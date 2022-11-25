@@ -63,9 +63,13 @@ def orders_get():
     cur.execute(
         "SELECT * from orders join products_in_order using(order_no) join products using(sku) where seller_id = %s", (seller_id,))
     data = cur.fetchall()
-    app.mysql.connection.commit()
     cur.close()
-    return make_response({'data': data}), 200
+    if data:
+        for i in data:
+            i['Images']=eval(i['Images'])
+        return make_response({'data': data}), 200
+    else:
+        return make_response({'message': 'No orders'}), 404
 
 
 @app.post('/add_product')

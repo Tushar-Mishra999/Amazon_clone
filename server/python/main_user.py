@@ -295,7 +295,8 @@ def order_post():
                     (order_id, i['sku'], i['quantity']))
         cur.execute(
             "UPDATE products SET inventory = inventory - %s WHERE sku = %s", (i['sku'], i['quantity']))
-        cur.execute('DELETE FROM cart WHERE username = "%s" AND sku = "%s"' %(username, i['sku']))
+        cur.execute('DELETE FROM cart WHERE username = "%s" AND sku = "%s"' % (
+            username, i['sku']))
         app.mysql.connection.commit()
     cur.close()
     return make_response({'message': 'Added to orders'}), 200
@@ -324,6 +325,25 @@ def order_get():
             return make_response({'message': 'Order not found'}), 404
     else:
         return make_response({'message': 'Order id not found'}), 404
+
+
+@app.put('/order')
+def order_put():
+    data = request.get_json()
+    order_id = data['order_id']
+    status = data['status']
+    try:
+        app.mysql.connection.commit()
+    except OperationalError as SQLdbError:
+        if "Lost connection" not in str(SQLdbError):
+            return SQLdbError.__dict__
+        app.mysql.connection = MySQL(app)
+    cur = app.mysql.connection.cursor(curdict.DictCursor)
+    cur.execute('UPDATE orders SET status = %s WHERE order_id = %s',
+                (status, order_id))
+    app.mysql.connection.commit()
+    cur.close()
+    return make_response({'message': 'Updated order status'}), 200
 
 
 @app.post('/review')

@@ -61,7 +61,7 @@ def orders_get():
     seller_id = request.args.get('seller_id')
     cur = app.mysql.connection.cursor(curdict.DictCursor)
     cur.execute(
-        "SELECT * from order join products_in_order using(order_no) join products using(sku) where seller_id=%s" % (seller_id))
+        "SELECT * from order join products_in_order using(order_no) join products using(sku) where seller_id=%s", (seller_id,))
     data = cur.fetchall()
     app.mysql.connection.commit()
     cur.close()

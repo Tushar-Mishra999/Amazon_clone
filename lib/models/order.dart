@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:amazon_clone/models/product.dart';
 
 class Order {
   final String orderNo;
@@ -78,7 +77,7 @@ class Order {
       shippingAddress: map['address'] ?? '',
       username: map['username'] ?? '',
       orderedAt: map['Date'] ??'',
-      status: map['Status']?.toInt() ?? 0,
+      status: map['Status']?? 0,
     );
   }
 

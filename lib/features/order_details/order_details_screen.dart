@@ -6,6 +6,7 @@ import 'package:amazon_clone/models/order.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   static const String routeName = '/order-details';
@@ -40,6 +41,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     adminServices.changeOrderStatus(
       context: context,
       order: widget.order,
+      status:currentStep+1,
       onSuccess: () {
         setState(() {
           currentStep += 1;
@@ -174,8 +176,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   children: [
                       Row(
                         children: [
-                          Image.network(
-                            widget.order.images[0],
+                          FadeInImage.memoryNetwork(
+                            image:widget.order.images[0],
+                            placeholder: kTransparentImage,
                             height: 120,
                             width: 120,
                           ),

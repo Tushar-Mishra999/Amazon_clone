@@ -12,11 +12,13 @@ import 'package:provider/provider.dart';
 
 import '../../../common/widgets/loader.dart';
 import '../../../models/cateogory.dart';
+import '../../../models/product.dart';
 import '../../../providers/user_provider.dart';
 
 class AddProductScreen extends StatefulWidget {
   static const String routeName = '/add-product';
-  const AddProductScreen({Key? key}) : super(key: key);
+   AddProductScreen({Key? key,required this.products}) : super(key: key);
+  List<Product> products;
 
   @override
   State<AddProductScreen> createState() => _AddProductScreenState();
@@ -81,7 +83,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
           images: images,
           sellerId: email,
           id: idController.text,
-          keywords: keywordController.text);
+          keywords: keywordController.text,
+          products: widget.products);
     }
   } 
 

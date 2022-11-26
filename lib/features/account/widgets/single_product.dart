@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class SingleProduct extends StatelessWidget {
   final String image;
@@ -23,9 +24,10 @@ class SingleProduct extends StatelessWidget {
         child: Container(
           width: 180,
           padding: const EdgeInsets.all(10),
-          child: Image.network(
-            image,
+          child: FadeInImage.memoryNetwork(
+            image:image,
             fit: BoxFit.fitHeight,
+            placeholder: kTransparentImage,
             width: 180,
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:amazon_clone/models/product.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../../../common/widgets/loader.dart';
 
@@ -59,12 +60,12 @@ class _CartProductState extends State<CartProduct> {
             ),
             child: Row(
               children: [
-                Image.network(
-                  product.images[0],
-                  fit: BoxFit.contain,
-                  height: 135,
-                  width: 135,
-                ),
+                FadeInImage.memoryNetwork(
+            image:product.images[0],
+            fit: BoxFit.fitHeight,
+            placeholder: kTransparentImage,
+            width: 180,
+          ),
                 Column(
                   children: [
                     Container(

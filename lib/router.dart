@@ -1,4 +1,5 @@
 
+import 'package:amazon_clone/features/admin/screens/admin_screen.dart';
 import 'package:flutter/material.dart';
 import 'common/widgets/bottom_bar.dart';
 import 'features/buy/screens/buy_screen.dart';
@@ -51,6 +52,13 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => SearchScreen(
           searchQuery: searchQuery,
+        ),
+      );
+      case AdminScreen.routeName:
+      var searchQuery = routeSettings.arguments as String;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const AdminScreen(
         ),
       );
     case ProductDetailScreen.routeName:

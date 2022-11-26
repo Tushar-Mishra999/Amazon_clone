@@ -4,6 +4,7 @@ import 'package:amazon_clone/common/widgets/bottom_bar.dart';
 import 'package:amazon_clone/constants/error_handling.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/constants/utils.dart';
+import 'package:amazon_clone/features/admin/screens/admin_screen.dart';
 import 'package:amazon_clone/features/home/screens/home_screen.dart';
 import 'package:amazon_clone/models/user.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
@@ -29,8 +30,7 @@ class AuthService {
           address: address,
           type: userType,
           token: '',
-          cart: []
-          );
+          cart: []);
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),
@@ -44,14 +44,14 @@ class AuthService {
           response: res,
           context: context,
           onSuccess: () {
-           showSnackBar(context, 'Account has been created');
+            showSnackBar(context, 'Account has been created');
           });
     } catch (e) {
       showSnackBar(context, e.toString());
     }
   }
 
-   void signInUser({
+  void signInUser({
     required BuildContext context,
     required String email,
     required String password,
@@ -74,11 +74,20 @@ class AuthService {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           Provider.of<UserProvider>(context, listen: false).setUser(res.body);
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            BottomBar.routeName,
-            (route) => false,
-          );
+          if (json.decode(res.body)['type'] == 'user') {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              BottomBar.routeName,
+              (route) => false,
+            );
+          }
+          else{
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AdminScreen.routeName,
+              (route) => false,
+            );
+          }
         },
       );
     } catch (e) {
@@ -86,7 +95,7 @@ class AuthService {
     }
   }
 
-   void getUserData(
+  void getUserData(
     BuildContext context,
   ) async {
     try {
@@ -123,5 +132,4 @@ class AuthService {
       showSnackBar(context, e.toString());
     }
   }
-
 }

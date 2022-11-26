@@ -1,6 +1,7 @@
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class CarouselImage extends StatelessWidget {
   const CarouselImage({Key? key}) : super(key: key);
@@ -17,11 +18,13 @@ class CarouselImage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
-              child: Image.network(
-                i,
-                fit: BoxFit.cover,
-                height: 200,
-              ),
+              child:
+               FadeInImage.memoryNetwork(
+            image:i,
+            fit: BoxFit.cover,
+            placeholder: kTransparentImage,
+            height: 200,
+          ), 
             ),
           );
         },

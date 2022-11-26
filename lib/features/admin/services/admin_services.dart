@@ -15,18 +15,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class AdminServices {
-  void sellProduct({
-    required BuildContext context,
-    required String name,
-    required String description,
-    required int price,
-    required int quantity,
-    String? category,
-    required String keywords,
-    required List<XFile> images,
-    required String sellerId,
-    required String id,
-  }) async {
+  void sellProduct(
+      {required BuildContext context,
+      required String name,
+      required String description,
+      required int price,
+      required int quantity,
+      String? category,
+      required String keywords,
+      required List<XFile> images,
+      required String sellerId,
+      required String id,
+      required List<Product> products}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
@@ -69,6 +69,7 @@ class AdminServices {
         context: context,
         onSuccess: () {
           showSnackBar(context, 'Product Added Successfully!');
+          products.add(product);
           Navigator.pop(context);
         },
       );
@@ -163,24 +164,20 @@ class AdminServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     List<Order> orderList = [];
     try {
-      http.Response res = await http
-          .get(Uri.parse('$kdigitalOceanUri/orders?username=${userProvider.user.email}'), headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'x-auth-token': userProvider.user.token,
-      });
+      http.Response res = await http.get(
+          Uri.parse(
+              '$kdigitalOceanUri/orders?seller_id=${userProvider.user.email}'),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': userProvider.user.token,
+          });
 
       httpErrorHandle(
         response: res,
         context: context,
         onSuccess: () {
-          for (int i = 0; i < jsonDecode(res.body).length; i++) {
-            orderList.add(
-              Order.fromJson(
-                jsonEncode(
-                  jsonDecode(res.body)[i],
-                ),
-              ),
-            );
+          for (int i = 0; i < jsonDecode(res.body)['data'].length; i++) {
+            orderList.add(Order.fromMap(jsonDecode(res.body)['data'][i]));
           }
         },
       );
@@ -193,6 +190,7 @@ class AdminServices {
   void changeOrderStatus({
     required BuildContext context,
     required Order order,
+    required int status,
     required VoidCallback onSuccess,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -205,8 +203,8 @@ class AdminServices {
           'x-auth-token': userProvider.user.token,
         },
         body: jsonEncode({
-          'order_id': order.sku,
-          'status': order.status + 1,
+          'order_id': order.orderNo,
+          'status': status,
         }),
       );
 

@@ -3,6 +3,7 @@ import 'package:amazon_clone/features/home/services/home_services.dart';
 import 'package:amazon_clone/features/product_details/screens/product_details_screen.dart';
 import 'package:amazon_clone/models/product.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class DealOfDay extends StatefulWidget {
   const DealOfDay({Key? key}) : super(key: key);
@@ -70,8 +71,9 @@ class _DealOfDayState extends State<DealOfDay> {
                       SizedBox(
                         height: size.height * 0.02,
                       ),
-                      Image.network(
-                        product!.images[0],
+                      FadeInImage.memoryNetwork(
+                        image:product!.images[0],
+                        placeholder: kTransparentImage,
                         height: 235,
                         fit: BoxFit.fitHeight,
                       ),

@@ -4,6 +4,7 @@ import 'package:amazon_clone/features/home/services/home_services.dart';
 import 'package:amazon_clone/features/product_details/screens/product_details_screen.dart';
 import 'package:amazon_clone/models/product.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class CategoryDealsScreen extends StatefulWidget {
   static const String routeName = '/category-deals';
@@ -124,8 +125,9 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(10),
-                                        child: Image.network(
-                                          product.images[0],
+                                        child: FadeInImage.memoryNetwork(
+                                          image:product.images[0],
+                                          placeholder: kTransparentImage,
                                         ),
                                       ),
                                     ),

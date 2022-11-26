@@ -189,6 +189,20 @@ def delete_product():
         return make_response({'message': str(SQLdbError)}), 400
 
 
+@app.get('/earnings')
+def earnings_get():
+    try:
+        seller_id = request.args.get('seller_id')
+        cur = app.mysql.connection.cursor(curdict.DictCursor)
+        cur.execute(
+            "select c.category_name,sum(p.reg_price*po.quantity) as total from products_in_order po join products p using(sku) join categories c on p.category=c.category_id where p.seller_id=%s group by p.category", (seller_id,))
+        data = cur.fetchall()
+        cur.close()
+        return make_response({'data': data}), 200
+    except OperationalError as SQLdbError:
+        return make_response({'message': str(SQLdbError)}), 400
+
+
 @app.get('/routes')
 def routes():
     routes = []

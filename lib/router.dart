@@ -1,4 +1,3 @@
-
 import 'package:amazon_clone/features/admin/screens/admin_screen.dart';
 import 'package:flutter/material.dart';
 import 'common/widgets/bottom_bar.dart';
@@ -24,7 +23,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case HomeScreen.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) =>HomeScreen(),
+        builder: (_) => HomeScreen(),
       );
     case BottomBar.routeName:
       return MaterialPageRoute(
@@ -32,9 +31,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (_) => const BottomBar(),
       );
     case AddProductScreen.routeName:
+      var products = routeSettings.arguments as List<Product>;
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const AddProductScreen(),
+        builder: (_) =>AddProductScreen(
+            products: products,
+        ),
       );
 
     case CategoryDealsScreen.routeName:
@@ -45,7 +47,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           category: category,
         ),
       );
-      
+
     case SearchScreen.routeName:
       var searchQuery = routeSettings.arguments as String;
       return MaterialPageRoute(
@@ -54,12 +56,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           searchQuery: searchQuery,
         ),
       );
-      case AdminScreen.routeName:
+    case AdminScreen.routeName:
       var searchQuery = routeSettings.arguments as String;
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const AdminScreen(
-        ),
+        builder: (_) => const AdminScreen(),
       );
     case ProductDetailScreen.routeName:
       var product = routeSettings.arguments as Product;

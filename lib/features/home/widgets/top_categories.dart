@@ -1,6 +1,7 @@
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/features/home/screens/category_deals_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../../../models/cateogory.dart';
 
@@ -34,8 +35,9 @@ class TopCategories extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
-                    child: Image.network(
-                      productCategories[index].image!,
+                    child: FadeInImage.memoryNetwork(
+                      image:productCategories[index].image!,
+                      placeholder: kTransparentImage,
                       fit: BoxFit.cover,
                       height: 40,
                       width: 40,

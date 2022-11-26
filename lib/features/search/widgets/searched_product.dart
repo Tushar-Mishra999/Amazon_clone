@@ -1,6 +1,7 @@
 import 'package:amazon_clone/common/widgets/stars.dart';
 import 'package:amazon_clone/models/product.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class SearchedProduct extends StatelessWidget {
   final Product product;
@@ -29,8 +30,9 @@ class SearchedProduct extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Image.network(
-                  product.images[0],
+                FadeInImage.memoryNetwork(
+                  image:product.images[0],
+                  placeholder: kTransparentImage,
                   fit: BoxFit.contain,
                   height: 135,
                   width: 135,

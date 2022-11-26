@@ -40,7 +40,7 @@ class _PostsScreenState extends State<PostsScreen> {
   }
 
   void navigateToAddProduct() {
-    Navigator.pushNamed(context, AddProductScreen.routeName);
+    Navigator.pushNamed(context, AddProductScreen.routeName,arguments: products);
   }
 
   @override

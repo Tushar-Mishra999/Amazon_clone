@@ -5,8 +5,12 @@ Frontend
 The frontend has been created using Flutter.
 
 Backend
-The backend has been created using Python(Flask framework) and Node.JS(Express.JS framework). Flask has been used to handle the operations between the user and the database.
-Express.JS has been used for user authentication along with Firebase which has been used to manage the users and to maintain the user privacy.
+-The backend has been created using Python(Flask framework) and Node.JS(Express.JS framework). Flask has been used to handle the operations between the user and the database.
+-Express.JS has been used for user authentication along with Firebase which has been used to manage the users and to maintain the user privacy.
+-There is 'server' folder that contains two sub-folders 'python' and 'js' each having the respective code for the backend.
+-The user operations are managed by 'main_user.py'.
+-The seller operations are managed by 'main_seller.py'
+-The required packaged can be installed using the requirements.txt file and package.json
 
 Database
 We have used MySQL as our database engine. There 9 tables in our database:

@@ -223,25 +223,23 @@ class AdminServices {
     List<Sales> sales = [];
     int totalEarning = 0;
     try {
-      http.Response res =
-          await http.get(Uri.parse('$kdigitalOceanUri/order'), headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'x-auth-token': userProvider.user.token,
-      });
+      http.Response res = await http.get(
+          Uri.parse(
+              '$kdigitalOceanUri/earnings?seller_id=${userProvider.user.email}'),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': userProvider.user.token,
+          });
 
       httpErrorHandle(
         response: res,
         context: context,
         onSuccess: () {
           var response = jsonDecode(res.body);
-          totalEarning = response['totalEarnings'];
-          sales = [
-            Sales('Mobiles', response['mobileEarnings']),
-            Sales('Essentials', response['essentialEarnings']),
-            Sales('Books', response['booksEarnings']),
-            Sales('Appliances', response['applianceEarnings']),
-            Sales('Fashion', response['fashionEarnings']),
-          ];
+          for (var element in response['data']) {
+            sales.add(Sales.fromMap(element));
+            totalEarning += element["total"] as int;
+          }
         },
       );
     } catch (e) {

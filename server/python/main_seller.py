@@ -200,7 +200,7 @@ def earnings_get():
         cur.close()
         if data:
             for i in data:
-                i['total'] = float(i['total'])
+                i['total'] = int(i['total'])
             return make_response({'data': data}), 200
     except OperationalError as SQLdbError:
         return make_response({'message': str(SQLdbError)}), 400

@@ -28,8 +28,8 @@ CREATE TABLE `cart` (
   `qty` int NOT NULL,
   PRIMARY KEY (`username`,`sku`),
   KEY `sku_cart_fk` (`sku`),
-  CONSTRAINT `sku_cart_fk` FOREIGN KEY (`sku`) REFERENCES `products` (`SKU`),
-  CONSTRAINT `username_cart_fk` FOREIGN KEY (`username`) REFERENCES `users` (`Username`)
+  CONSTRAINT `sku_cart_fk` FOREIGN KEY (`sku`) REFERENCES `products` (`SKU`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `username_cart_fk` FOREIGN KEY (`username`) REFERENCES `users` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -41,28 +41,64 @@ LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO,STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`admin`@`%`*/ /*!50003 TRIGGER `cart_AFTER_INSERT` AFTER INSERT ON `cart` FOR EACH ROW BEGIN
+update users set cart=cart+1 where email=new.username;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO,STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`admin`@`%`*/ /*!50003 TRIGGER `cart_AFTER_DELETE` AFTER DELETE ON `cart` FOR EACH ROW BEGIN
+update users set cart=0 where email=old.username;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Table structure for table `category`
+-- Table structure for table `categories`
 --
 
-DROP TABLE IF EXISTS `category`;
+DROP TABLE IF EXISTS `categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `category` (
+CREATE TABLE `categories` (
   `category_id` varchar(255) NOT NULL,
   `category_name` varchar(255) DEFAULT NULL,
+  `image` text,
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `category`
+-- Dumping data for table `categories`
 --
 
-LOCK TABLES `category` WRITE;
-/*!40000 ALTER TABLE `category` DISABLE KEYS */;
-/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+LOCK TABLES `categories` WRITE;
+/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
+INSERT INTO `categories` VALUES ('1001','Human','https://ecommercecloneproductimages.s3.amazonaws.com/images/appliances.jpeg'),('1002','Appliances','https://ecommercecloneproductimages.s3.amazonaws.com/images/appliances.jpeg'),('1003','Books','https://ecommercecloneproductimages.s3.amazonaws.com/images/books.jpeg'),('1004','Electronics','https://ecommercecloneproductimages.s3.amazonaws.com/images/electronics.jpeg'),('1005','Essentials','https://ecommercecloneproductimages.s3.amazonaws.com/images/essentials.jpeg'),('1006','Fashion','https://ecommercecloneproductimages.s3.amazonaws.com/images/fashion.jpeg'),('1007','Mobiles','https://ecommercecloneproductimages.s3.amazonaws.com/images/mobiles.jpeg');
+/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -77,7 +113,7 @@ CREATE TABLE `keywords` (
   `sku` varchar(255) NOT NULL,
   PRIMARY KEY (`keyword`,`sku`),
   KEY `fk_sku_keyword` (`sku`),
-  CONSTRAINT `fk_sku_keyword` FOREIGN KEY (`sku`) REFERENCES `products` (`SKU`)
+  CONSTRAINT `fk_sku_keyword` FOREIGN KEY (`sku`) REFERENCES `products` (`SKU`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -87,6 +123,7 @@ CREATE TABLE `keywords` (
 
 LOCK TABLES `keywords` WRITE;
 /*!40000 ALTER TABLE `keywords` DISABLE KEYS */;
+INSERT INTO `keywords` VALUES ('denver','ajdj13ha'),('deodrant','ajdj13ha');
 /*!40000 ALTER TABLE `keywords` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,6 +138,8 @@ CREATE TABLE `orders` (
   `Order_No` varchar(255) NOT NULL,
   `Shipping_Address` varchar(255) DEFAULT NULL,
   `Username` varchar(255) DEFAULT NULL,
+  `Status` int DEFAULT '0',
+  `Date` datetime DEFAULT NULL,
   PRIMARY KEY (`Order_No`),
   KEY `fk_username` (`Username`),
   KEY `order_no_index` (`Order_No`),
@@ -114,6 +153,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES ('505089a7-4343-41a9-b44c-5fddc7cfd055','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:36:14'),('6b51867e-9ae0-4f74-80fa-529147218651','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',3,'2022-11-25 18:10:44'),('928e65a2-f8dc-4c3c-84a2-aba215edafef','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:22:56'),('9b02a56d-f4e4-4955-8220-ad55e0f7f07d','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:02:31'),('d3398f54-9a4d-4b8f-8ee3-9ae23c0b28e3','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',3,'2022-11-25 05:11:20'),('dd143521-9b6c-4405-bf7a-17eaf72a37b5','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',2,'2022-11-25 12:14:57');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -128,17 +168,17 @@ CREATE TABLE `products` (
   `SKU` varchar(255) NOT NULL,
   `Title` varchar(255) NOT NULL,
   `Description` text NOT NULL,
-  `Images` text,
+  `Images` text NOT NULL,
   `Reg_price` int NOT NULL,
   `Promo_price` int NOT NULL,
-  `Inventory` int NOT NULL,
-  `seller_id` varchar(255) DEFAULT NULL,
-  `category` varchar(255) DEFAULT NULL,
+  `Inventory` int unsigned NOT NULL,
+  `seller_id` varchar(255) NOT NULL,
+  `category` varchar(255) NOT NULL,
   PRIMARY KEY (`SKU`),
   KEY `seller_fk` (`seller_id`),
-  KEY `category_fk` (`category`),
   KEY `title_index` (`Title`),
-  CONSTRAINT `category_fk` FOREIGN KEY (`category`) REFERENCES `category` (`category_id`),
+  KEY `category_fk_idx` (`category`),
+  CONSTRAINT `category_fk` FOREIGN KEY (`category`) REFERENCES `categories` (`category_id`),
   CONSTRAINT `seller_fk` FOREIGN KEY (`seller_id`) REFERENCES `seller` (`seller_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -149,6 +189,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES ('ajdj13ha','Denver deo','this is a green deodrant with bluetooth','[\"https://ecommercecloneproductimages.s3.amazonaws.com/images/ajdj13ha_1.png\"]',200,0,9,'tusharmishra16@gmail.com','1004');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,10 +203,11 @@ DROP TABLE IF EXISTS `products_in_order`;
 CREATE TABLE `products_in_order` (
   `Order_No` varchar(255) NOT NULL,
   `SKU` varchar(255) NOT NULL,
+  `Quantity` int DEFAULT NULL,
   PRIMARY KEY (`Order_No`,`SKU`),
   KEY `fk_sku` (`SKU`),
-  CONSTRAINT `fk_order_no` FOREIGN KEY (`Order_No`) REFERENCES `orders` (`Order_No`),
-  CONSTRAINT `fk_sku` FOREIGN KEY (`SKU`) REFERENCES `products` (`SKU`)
+  CONSTRAINT `fk_order_no` FOREIGN KEY (`Order_No`) REFERENCES `orders` (`Order_No`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_sku` FOREIGN KEY (`SKU`) REFERENCES `products` (`SKU`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -175,35 +217,55 @@ CREATE TABLE `products_in_order` (
 
 LOCK TABLES `products_in_order` WRITE;
 /*!40000 ALTER TABLE `products_in_order` DISABLE KEYS */;
+INSERT INTO `products_in_order` VALUES ('505089a7-4343-41a9-b44c-5fddc7cfd055','ajdj13ha',1),('6b51867e-9ae0-4f74-80fa-529147218651','ajdj13ha',1),('928e65a2-f8dc-4c3c-84a2-aba215edafef','ajdj13ha',1),('9b02a56d-f4e4-4955-8220-ad55e0f7f07d','ajdj13ha',1),('d3398f54-9a4d-4b8f-8ee3-9ae23c0b28e3','ajdj13ha',2),('dd143521-9b6c-4405-bf7a-17eaf72a37b5','ajdj13ha',1);
 /*!40000 ALTER TABLE `products_in_order` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO,STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`admin`@`%`*/ /*!50003 TRIGGER `products_in_order_AFTER_INSERT` AFTER INSERT ON `products_in_order` FOR EACH ROW BEGIN
+update products set inventory=inventory-new.quantity where sku=new.sku;
+delete from cart where sku=new.sku and username in (select username from orders where order_no=new.order_no);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Table structure for table `review`
+-- Table structure for table `reviews`
 --
 
-DROP TABLE IF EXISTS `review`;
+DROP TABLE IF EXISTS `reviews`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `review` (
+CREATE TABLE `reviews` (
   `rating` double(2,1) NOT NULL,
   `sku` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   PRIMARY KEY (`rating`,`sku`,`username`),
   KEY `sku_review_fk` (`sku`),
   KEY `username_review_fk` (`username`),
-  CONSTRAINT `sku_review_fk` FOREIGN KEY (`sku`) REFERENCES `products` (`SKU`),
-  CONSTRAINT `username_review_fk` FOREIGN KEY (`username`) REFERENCES `users` (`Username`)
+  CONSTRAINT `sku_review_fk` FOREIGN KEY (`sku`) REFERENCES `products` (`SKU`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `username_review_fk` FOREIGN KEY (`username`) REFERENCES `users` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `review`
+-- Dumping data for table `reviews`
 --
 
-LOCK TABLES `review` WRITE;
-/*!40000 ALTER TABLE `review` DISABLE KEYS */;
-/*!40000 ALTER TABLE `review` ENABLE KEYS */;
+LOCK TABLES `reviews` WRITE;
+/*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
+INSERT INTO `reviews` VALUES (2.0,'ajdj13ha','tusharmishra16@gmail.com'),(4.0,'ajdj13ha','tusharmishra16@gmail.com');
+/*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -216,7 +278,6 @@ DROP TABLE IF EXISTS `seller`;
 CREATE TABLE `seller` (
   `seller_id` varchar(255) NOT NULL,
   `seller_name` varchar(255) DEFAULT NULL,
-  `total_sales` int DEFAULT NULL,
   PRIMARY KEY (`seller_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -227,6 +288,7 @@ CREATE TABLE `seller` (
 
 LOCK TABLES `seller` WRITE;
 /*!40000 ALTER TABLE `seller` DISABLE KEYS */;
+INSERT INTO `seller` VALUES ('tusharmishra16@gmail.com','Tushar Mishra');
 /*!40000 ALTER TABLE `seller` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,8 +302,8 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `Username` varchar(255) NOT NULL,
   `Email` varchar(150) DEFAULT NULL,
-  `Mobile_No` int DEFAULT NULL,
-  `Password` varchar(255) DEFAULT NULL,
+  `Name` varchar(255) DEFAULT NULL,
+  `cart` int DEFAULT '0',
   PRIMARY KEY (`Username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -252,8 +314,27 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES ('dg325@snu.edu.in','dg325@snu.edu.in','Devanshi Goel',0),('ss878@snu.edu.in ','ss878@snu.edu.in ','Sarthak Singhania',NULL),('tusharmishra16@gmail.com','tusharmishra16@gmail.com','Tushar Mishra',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO,STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`admin`@`%`*/ /*!50003 TRIGGER `users_BEFORE_INSERT` BEFORE INSERT ON `users` FOR EACH ROW BEGIN
+if length(new.Email)>0 then set new.Username=new.Email;
+end if;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -264,4 +345,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-09 10:08:41
+-- Dump completed on 2022-11-27 17:51:46

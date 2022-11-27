@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'add_product_screen.dart';
 
 class PostsScreen extends StatefulWidget {
-  const PostsScreen({Key? key}) : super(key: key);
+  PostsScreen({Key? key}) : super(key: key);
+  bool isMount = true;
 
   @override
   State<PostsScreen> createState() => _PostsScreenState();
@@ -22,10 +23,18 @@ class _PostsScreenState extends State<PostsScreen> {
     super.initState();
     fetchAllProducts();
   }
+   @override
+  void dispose() {
+    
+    widget.isMount = false;
+    super.dispose();
+  }
 
   fetchAllProducts() async {
     products = await adminServices.fetchAllProducts(context);
-    setState(() {});
+    if (widget.isMount) {
+      setState(() {});
+    }
   }
 
   void deleteProduct(String id, int index) {

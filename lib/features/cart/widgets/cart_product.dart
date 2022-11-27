@@ -1,19 +1,14 @@
 import 'package:amazon_clone/features/cart/services/cart_services.dart';
 import 'package:amazon_clone/features/product_details/services/product_details_services.dart';
 import 'package:amazon_clone/models/product.dart';
-import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../../../common/widgets/loader.dart';
 
 class CartProduct extends StatefulWidget {
-  final int index;
-  const CartProduct({
-    Key? key,
-    required this.index,
-  }) : super(key: key);
+  final Product product;
+  const CartProduct({Key? key, required this.product}) : super(key: key);
 
   @override
   State<CartProduct> createState() => _CartProductState();
@@ -25,11 +20,11 @@ class _CartProductState extends State<CartProduct> {
   final CartServices cartServices = CartServices();
   bool isLoaded = false;
 
-  void increaseQuantity(Product product)async {
+  void increaseQuantity(Product product) async {
     isLoaded = true;
     setState(() {});
     await cartServices.addToCart(
-        context: context, product: product, quantity: product.quantity+1);
+        context: context, product: product, quantity: product.quantity + 1);
     isLoaded = false;
     setState(() {});
   }
@@ -40,7 +35,7 @@ class _CartProductState extends State<CartProduct> {
     await cartServices.removeFromCart(
       context: context,
       product: product,
-      quantity: product.quantity-1,
+      quantity: product.quantity - 1,
     );
     isLoaded = false;
     setState(() {});
@@ -48,8 +43,7 @@ class _CartProductState extends State<CartProduct> {
 
   @override
   Widget build(BuildContext context) {
-    final product = context.watch<UserProvider>().user.cart[widget.index];
-
+    Size size = MediaQuery.of(context).size;
     return Stack(children: [
       if (isLoaded) const Center(child: Loader()),
       Column(
@@ -59,20 +53,22 @@ class _CartProductState extends State<CartProduct> {
               horizontal: 10,
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 FadeInImage.memoryNetwork(
-            image:product.images[0],
-            fit: BoxFit.fitHeight,
-            placeholder: kTransparentImage,
-            width: 180,
-          ),
+                  image: widget.product.images[0],
+                  fit: BoxFit.fitHeight,
+                  placeholder: kTransparentImage,
+                  width: 80,
+                ),
+                SizedBox(width: size.width * 0.07),
                 Column(
                   children: [
                     Container(
                       width: 235,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        product.name,
+                        widget.product.name,
                         style: const TextStyle(
                           fontSize: 16,
                         ),
@@ -83,7 +79,7 @@ class _CartProductState extends State<CartProduct> {
                       width: 235,
                       padding: const EdgeInsets.only(left: 10, top: 5),
                       child: Text(
-                        '\$${product.price}',
+                        '\$${widget.product.price}',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -129,7 +125,7 @@ class _CartProductState extends State<CartProduct> {
                   child: Row(
                     children: [
                       InkWell(
-                        onTap: () => decreaseQuantity(product),
+                        onTap: () => decreaseQuantity(widget.product),
                         child: Container(
                           width: 35,
                           height: 32,
@@ -151,12 +147,12 @@ class _CartProductState extends State<CartProduct> {
                           height: 32,
                           alignment: Alignment.center,
                           child: Text(
-                            product.quantity.toString(),
+                            widget.product.quantity.toString(),
                           ),
                         ),
                       ),
                       InkWell(
-                        onTap: () => increaseQuantity(product),
+                        onTap: () => increaseQuantity(widget.product),
                         child: Container(
                           width: 35,
                           height: 32,

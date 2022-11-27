@@ -2,13 +2,13 @@ import 'package:amazon_clone/common/widgets/loader.dart';
 import 'package:amazon_clone/features/account/widgets/single_product.dart';
 import 'package:amazon_clone/features/admin/services/admin_services.dart';
 import 'package:amazon_clone/features/order_details/order_details_screen.dart';
-import 'package:amazon_clone/features/admin/widgets/top_buttons_admin';
+import 'package:amazon_clone/features/admin/widgets/top_buttons_admin.dart';
 import 'package:amazon_clone/models/order.dart';
 import 'package:flutter/material.dart';
 
 class OrdersScreen extends StatefulWidget {
-  const OrdersScreen({Key? key}) : super(key: key);
-
+  OrdersScreen({Key? key}) : super(key: key);
+ bool isMount = true;
   @override
   State<OrdersScreen> createState() => _OrdersScreenState();
 }
@@ -22,10 +22,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
     super.initState();
     fetchOrders();
   }
+  
+  @override
+  void dispose() {
+    widget.isMount = false;
+    super.dispose();
+  }
 
   void fetchOrders() async {
     orders = await adminServices.fetchAllOrders(context);
-    setState(() {});
+    if (widget.isMount) {
+      setState(() {});
+    }
   }
 
   @override

@@ -194,13 +194,14 @@ def earnings_get():
     try:
         seller_id = request.args.get('seller_id')
         cur = app.mysql.connection.cursor(curdict.DictCursor)
-        cur.execute(
-            "select c.category_name,sum(p.reg_price*po.quantity) as total from products_in_order po join products p using(sku) join categories c on p.category=c.category_id where p.seller_id=%s group by p.category", (seller_id,))
+        cur.execute("with a as (select * from categories),\
+                    b as (select category, sum(p.reg_price*po.quantity) as total from products_in_order po join products p using(sku) where p.seller_id=%s)\
+                    select a.category_name, b.total from a left join b on a.category_id=b.category", (seller_id,))
         data = cur.fetchall()
         cur.close()
         if data:
             for i in data:
-                i['total'] = int(i['total'])
+                i['total'] = int(i['total']) if i['total'] else 0
             return make_response({'data': data}), 200
     except OperationalError as SQLdbError:
         return make_response({'message': str(SQLdbError)}), 400

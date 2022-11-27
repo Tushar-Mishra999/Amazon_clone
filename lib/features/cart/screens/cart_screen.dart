@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 import '../../../common/widgets/loader.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({Key? key}) : super(key: key);
+  CartScreen({Key? key}) : super(key: key);
+  bool isMount = true;
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -39,7 +40,9 @@ class _CartScreenState extends State<CartScreen> {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     user.cart = await cartServices.fetchCartProducts(context: context);
     isLoaded = true;
-    setState(() {});
+    if (widget.isMount) {
+      setState(() {});
+    }
   }
 
   @override
@@ -48,6 +51,13 @@ class _CartScreenState extends State<CartScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       fetchCartProducts();
     });
+  }
+
+    @override
+  void dispose() {
+    
+    widget.isMount = false;
+    super.dispose();
   }
 
   @override
@@ -129,10 +139,9 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
       ),
-      body:  !isLoaded?const Loader():SingleChildScrollView(
+      body:  !isLoaded? const Loader():SingleChildScrollView(
         child: Column(
           children: [
-            const AddressBox(),
             const CartSubtotal(),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -151,11 +160,11 @@ class _CartScreenState extends State<CartScreen> {
             ),
             const SizedBox(height: 5),
             ListView.builder(
-              itemCount: user.cart.length,
+              itemCount: !isLoaded?0:user.cart.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return CartProduct(
-                  index: index,
+                  product: user.cart[index],
                 );
               },
             ),

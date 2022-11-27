@@ -35,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
    @override
   void dispose() {
-    
     widget.isMount = false;
     super.dispose();
   }
@@ -46,9 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   fetchAllCategories() async {
     productCategories = await homeServices.fetchCategory(context);
-    // for (var x in productCategories) {
-    //   mp[x.title] = x.categoryId;
-    //}
     if (widget.isMount) {
       setState(() {});
     }
@@ -134,7 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ? SingleChildScrollView(
                 child: Column(
                   children: [
-                    //const AddressBox(),
                     const SizedBox(height: 10),
                     TopCategories(
                       productCategories: productCategories,

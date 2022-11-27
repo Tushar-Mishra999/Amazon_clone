@@ -27,7 +27,7 @@ class CartServices {
         response: res,
         context: context,
         onSuccess: () {
-          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+          for (int i = 0; i < jsonDecode(res.body)['cart'].length; i++) {
             productList.add(
               Product.fromCartJson(
                 jsonEncode(

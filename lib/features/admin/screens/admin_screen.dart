@@ -14,14 +14,15 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreenState extends State<AdminScreen> {
+
   int _page = 0;
   double bottomBarWidth = 42;
   double bottomBarBorderWidth = 5;
 
   List<Widget> pages = [
-    const PostsScreen(),
-    const AnalyticsScreen(),
-     const OrdersScreen(),
+     PostsScreen(),
+   AnalyticsScreen(),
+    OrdersScreen(),
   ];
 
   void updatePage(int page) {

@@ -54,27 +54,8 @@ class _BuyScreenState extends State<BuyScreen> {
     cityController.dispose();
   }
 
-  // void onApplePayResult(res) {
-  //   // if (Provider.of<UserProvider>(context, listen: false)
-  //   //     .user
-  //   //     .address
-  //   //     .isEmpty) {
-  //   //   addressServices.saveUserAddress(
-  //   //       context: context, address: addressToBeUsed);
-  //   // }
-  //   addressServices.placeOrder(
-  //     context: context,
-  //   );
-  // }
 
   void onGooglePayResult() {
-    // if (Provider.of<UserProvider>(context, listen: false)
-    //     .user
-    //     .address
-    //     .isEmpty) {
-    //   addressServices.saveUserAddress(
-    //       context: context, address: addressToBeUsed);
-    // }
     addressServices.placeOrder(
       context: context,
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 //String uri = "http://192.168.114.19:3000";
+String uri = "https://dbms-auth-lbrhl.ondigitalocean.app";
 String kdigitalOceanUri = "https://dbms-seller-side-t2d74.ondigitalocean.app";
 String userUri = "https://dbms-user-app-e2maw.ondigitalocean.app";
 

@@ -7,8 +7,8 @@ import 'package:amazon_clone/models/order.dart';
 import 'package:flutter/material.dart';
 
 class Orders extends StatefulWidget {
-  const Orders({Key? key}) : super(key: key);
-
+  Orders({Key? key}) : super(key: key);
+  bool isMount = true;
   @override
   State<Orders> createState() => _OrdersState();
 }
@@ -23,17 +23,24 @@ class _OrdersState extends State<Orders> {
     fetchOrders();
   }
 
+  @override
+  void dispose() {
+    widget.isMount = false;
+    super.dispose();
+  }
+
   void fetchOrders() async {
     orders = await accountServices.fetchMyOrders(context: context);
-    setState(() {});
+     if (widget.isMount) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return 
-    orders == null
-        ? const Loader():
-         Column(
+    return orders == null
+        ? const Loader()
+        : Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,7 +80,7 @@ class _OrdersState extends State<Orders> {
                 ),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                   itemCount: orders!.length,
+                  itemCount: orders!.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {

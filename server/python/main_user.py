@@ -287,11 +287,11 @@ def order_post():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute('INSERT INTO orders(order_no,username,date,shipping_address) VALUES("%s", "%s", "%s", "%s")' %
+    cur.execute('call order_insert(%s, %s, %s, %s)',
                 (order_id, username, date, address))
     app.mysql.connection.commit()
     for i in products:
-        cur.execute('INSERT INTO products_in_order VALUES("%s", "%s", %s)' %
+        cur.execute('call insert_order_products(%s,%s,%s)',
                     (order_id, i['sku'], i['quantity']))
         app.mysql.connection.commit()
     cur.close()
@@ -352,7 +352,7 @@ def featured_get():
             return SQLdbError.__dict__
         app.mysql.connection = MySQL(app)
     cur = app.mysql.connection.cursor(curdict.DictCursor)
-    cur.execute('select * from products where sku in (select sku from products_in_order group by sku order by count(sku) desc) limit 1')
+    cur.execute('select * from featured')
     result = cur.fetchall()
     cur.close()
     if result:

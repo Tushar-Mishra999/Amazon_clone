@@ -23,13 +23,13 @@ class AccountScreen extends StatelessWidget {
             children: [
               Container(
                 alignment: Alignment.topLeft,
-                child: Image.asset(
-                  'assets/images/amazon_in.png',
-                  width: 120,
-                  height: 45,
+                child: const Text(
+                'BaZar',
+                style: TextStyle(
                   color: Colors.black,
+                  fontWeight: FontWeight.bold,
                 ),
-              ),
+              ),),
               Container(
                 padding: const EdgeInsets.only(left: 15, right: 15),
                 child: Row(

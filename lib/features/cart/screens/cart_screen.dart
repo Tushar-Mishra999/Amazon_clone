@@ -47,6 +47,7 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   void initState() {
+     widget.isMount = true;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       fetchCartProducts();

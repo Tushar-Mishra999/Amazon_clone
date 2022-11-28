@@ -33,7 +33,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController idController = TextEditingController();
   final AdminServices adminServices = AdminServices();
   List<Categories> productCategories = [];
-  String category = 'Human';
+  String category = 'Appliances';
   Map<String, String> mp = {};
   List<XFile> images = [];
   final _addProductFormKey = GlobalKey<FormState>();

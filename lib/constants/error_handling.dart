@@ -19,6 +19,6 @@ void httpErrorHandle({
     showSnackBar( context,jsonDecode(response.body)['error']);
     break;
     default:
-    showSnackBar(context,('Processing Data'));
+    showSnackBar(context,('Nothing found'));
   }
 }

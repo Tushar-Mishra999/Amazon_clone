@@ -1,7 +1,5 @@
 import 'package:amazon_clone/common/widgets/loader.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
-import 'package:amazon_clone/features/home/widgets/address_box.dart';
-import 'package:amazon_clone/features/home/widgets/carousel_image.dart';
 import 'package:amazon_clone/features/home/widgets/deal_of_the_day.dart';
 import 'package:amazon_clone/features/home/widgets/discount4.dart';
 import 'package:amazon_clone/features/home/widgets/top_categories.dart';
@@ -29,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    widget.isMount = true;
     super.initState();
     fetchAllCategories();
   }
@@ -106,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 1,
                             ),
                           ),
-                          hintText: 'Search Amazon.in',
+                          hintText: 'Search',
                           hintStyle: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 17,

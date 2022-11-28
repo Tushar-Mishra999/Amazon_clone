@@ -102,6 +102,26 @@ INSERT INTO `categories` VALUES ('1001','Human','https://ecommercecloneproductim
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `featured`
+--
+
+DROP TABLE IF EXISTS `featured`;
+/*!50001 DROP VIEW IF EXISTS `featured`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `featured` AS SELECT 
+ 1 AS `SKU`,
+ 1 AS `Title`,
+ 1 AS `Description`,
+ 1 AS `Images`,
+ 1 AS `Reg_price`,
+ 1 AS `Promo_price`,
+ 1 AS `Inventory`,
+ 1 AS `seller_id`,
+ 1 AS `category`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `keywords`
 --
 
@@ -136,7 +156,7 @@ DROP TABLE IF EXISTS `orders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
   `Order_No` varchar(255) NOT NULL,
-  `Shipping_Address` varchar(255) DEFAULT NULL,
+  `Shipping_Address` text,
   `Username` varchar(255) DEFAULT NULL,
   `Status` int DEFAULT '0',
   `Date` datetime DEFAULT NULL,
@@ -153,7 +173,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES ('505089a7-4343-41a9-b44c-5fddc7cfd055','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:36:14'),('6b51867e-9ae0-4f74-80fa-529147218651','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',3,'2022-11-25 18:10:44'),('928e65a2-f8dc-4c3c-84a2-aba215edafef','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:22:56'),('9b02a56d-f4e4-4955-8220-ad55e0f7f07d','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:02:31'),('d3398f54-9a4d-4b8f-8ee3-9ae23c0b28e3','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',3,'2022-11-25 05:11:20'),('dd143521-9b6c-4405-bf7a-17eaf72a37b5','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',2,'2022-11-25 12:14:57');
+INSERT INTO `orders` VALUES ('1412d0c9-15f7-42cb-9d81-8f59bd4ee739','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',2,'2022-11-28 08:37:01'),('505089a7-4343-41a9-b44c-5fddc7cfd055','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:36:14'),('6b51867e-9ae0-4f74-80fa-529147218651','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',3,'2022-11-25 18:10:44'),('928e65a2-f8dc-4c3c-84a2-aba215edafef','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:22:56'),('9b02a56d-f4e4-4955-8220-ad55e0f7f07d','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',0,'2022-11-27 11:02:31'),('d3398f54-9a4d-4b8f-8ee3-9ae23c0b28e3','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',3,'2022-11-25 05:11:20'),('dd143521-9b6c-4405-bf7a-17eaf72a37b5','Aashaina Homes,Ghaziabas','dg325@snu.edu.in',2,'2022-11-25 12:14:57');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +209,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES ('ajdj13ha','Denver deo','this is a green deodrant with bluetooth','[\"https://ecommercecloneproductimages.s3.amazonaws.com/images/ajdj13ha_1.png\"]',200,0,9,'tusharmishra16@gmail.com','1004');
+INSERT INTO `products` VALUES ('ajdj13ha','Denver deo','this is a green deodrant with bluetooth','[\"https://ecommercecloneproductimages.s3.amazonaws.com/images/ajdj13ha_1.png\"]',200,0,8,'tusharmishra16@gmail.com','1004');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,7 +237,7 @@ CREATE TABLE `products_in_order` (
 
 LOCK TABLES `products_in_order` WRITE;
 /*!40000 ALTER TABLE `products_in_order` DISABLE KEYS */;
-INSERT INTO `products_in_order` VALUES ('505089a7-4343-41a9-b44c-5fddc7cfd055','ajdj13ha',1),('6b51867e-9ae0-4f74-80fa-529147218651','ajdj13ha',1),('928e65a2-f8dc-4c3c-84a2-aba215edafef','ajdj13ha',1),('9b02a56d-f4e4-4955-8220-ad55e0f7f07d','ajdj13ha',1),('d3398f54-9a4d-4b8f-8ee3-9ae23c0b28e3','ajdj13ha',2),('dd143521-9b6c-4405-bf7a-17eaf72a37b5','ajdj13ha',1);
+INSERT INTO `products_in_order` VALUES ('1412d0c9-15f7-42cb-9d81-8f59bd4ee739','ajdj13ha',1),('505089a7-4343-41a9-b44c-5fddc7cfd055','ajdj13ha',1),('6b51867e-9ae0-4f74-80fa-529147218651','ajdj13ha',1),('928e65a2-f8dc-4c3c-84a2-aba215edafef','ajdj13ha',1),('9b02a56d-f4e4-4955-8220-ad55e0f7f07d','ajdj13ha',1),('d3398f54-9a4d-4b8f-8ee3-9ae23c0b28e3','ajdj13ha',2),('dd143521-9b6c-4405-bf7a-17eaf72a37b5','ajdj13ha',1);
 /*!40000 ALTER TABLE `products_in_order` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -335,6 +355,24 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Final view structure for view `featured`
+--
+
+/*!50001 DROP VIEW IF EXISTS `featured`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`admin`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `featured` AS select `products`.`SKU` AS `SKU`,`products`.`Title` AS `Title`,`products`.`Description` AS `Description`,`products`.`Images` AS `Images`,`products`.`Reg_price` AS `Reg_price`,`products`.`Promo_price` AS `Promo_price`,`products`.`Inventory` AS `Inventory`,`products`.`seller_id` AS `seller_id`,`products`.`category` AS `category` from `products` where `products`.`SKU` in (select `products_in_order`.`SKU` from `products_in_order` group by `products_in_order`.`SKU` order by count(`products_in_order`.`SKU`) desc) limit 1 */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -345,4 +383,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-27 17:51:46
+-- Dump completed on 2022-11-28 14:13:57

@@ -48,3 +48,5 @@ app.*.map.json
 #node_modules
 /server/js/node_modules
 /server/lol
+
+/earnings.sql

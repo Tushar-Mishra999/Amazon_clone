@@ -39,7 +39,7 @@ authRouter.post("/api/signup", async (req, res) => {
         let body={email,name}
         if (type=="user"){
             request({
-                url: 'https://ecommerce-app-dbms-project-hazr6.ondigitalocean.app/register',
+                url: 'https://dbms-user-app-e2maw.ondigitalocean.app/register',
                 method: "POST",
                 json: true,
                 body: body
@@ -53,7 +53,7 @@ authRouter.post("/api/signup", async (req, res) => {
             );
         } else if (type=="seller"){
             request({
-                url: 'https://octopus-app-95tr7.ondigitalocean.app/register',
+                url: 'https://dbms-seller-side-t2d74.ondigitalocean.app/register',
                 method: "POST",
                 json: true,
                 body: body

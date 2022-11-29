@@ -19,6 +19,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   void initState() {
+     widget.isMount = true;
     super.initState();
     fetchOrders();
   }
@@ -57,29 +58,31 @@ class _OrdersScreenState extends State<OrdersScreen> {
               SizedBox(
                 height: size.height * 0.03,
               ),
-              GridView.builder(
-                shrinkWrap: true,
-                itemCount: orders!.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  final orderData = orders![index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        OrderDetailScreen.routeName,
-                        arguments: orderData,
-                      );
-                    },
-                    child: SizedBox(
-                      height: 140,
-                      child: SingleProduct(
-                        image: orderData.images[0],
+              Expanded(
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: orders!.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                  itemBuilder: (context, index) {
+                    final orderData = orders![index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          OrderDetailScreen.routeName,
+                          arguments: orderData,
+                        );
+                      },
+                      child: SizedBox(
+                        height: 140,
+                        child: SingleProduct(
+                          image: orderData.images[0],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ],
           );

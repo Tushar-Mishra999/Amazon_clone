@@ -136,7 +136,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             width: 1,
                           ),
                         ),
-                        hintText: 'Search Amazon.in',
+                        hintText: 'Search',
                         hintStyle: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 17,
@@ -222,7 +222,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         children: [
                           TextSpan(
-                            text: '\$${product.price}',
+                            text: '\₹${product.price}',
                             style: const TextStyle(
                               fontSize: 22,
                               color: Colors.red,
@@ -240,13 +240,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Container(
                     color: Colors.black12,
                     height: 5,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: CustomButton(
-                      text: 'Buy Now',
-                      onTap: () {},
-                    ),
                   ),
                   const SizedBox(height: 10),
                   Padding(

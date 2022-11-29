@@ -19,6 +19,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   @override
   void initState() {
+     widget.isMount = true;
     super.initState();
     getEarnings();
   }

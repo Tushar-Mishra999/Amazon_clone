@@ -78,8 +78,7 @@ class AuthService {
               BottomBar.routeName,
               (route) => false,
             );
-          }
-          else{
+          } else {
             Navigator.pushNamedAndRemoveUntil(
               context,
               AdminScreen.routeName,
@@ -101,14 +100,15 @@ class AuthService {
       String? token = prefs.getString('x-auth-token');
 
       if (token == null) {
-        prefs.setString('x-auth-token', '');
+        await prefs.setString('x-auth-token', '');
+        token = 'abcdefgh';
       }
 
       var tokenRes = await http.post(
         Uri.parse('$uri/tokenIsValid'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'x-auth-token': token!
+          'x-auth-token': token
         },
       );
 
